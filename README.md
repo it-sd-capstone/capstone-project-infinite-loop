@@ -13,6 +13,29 @@ To set up and run this project locally, install the following:
     Apache Maven
     Apache Tomcat 10 or compatible version
 
+Set up Tomcat/mySQL
+    Open Tomcat Configuration
+
+    Go to Run → Edit Configurations
+
+    Select your Tomcat Server configuration
+
+    Open the Startup/Connection Tab
+
+    Click the Startup/Connection tab
+
+    Add Environment Variables
+        
+        Use the Environment Variables section to add the following key/value pairs:
+        Name	Value
+        MYSQLDATABASE	railway
+        MYSQLHOST	shuttle.proxy.rlwy.net
+        MYSQLPASSWORD	FcbZBsceyzkySTsgCroWIaApNjhdmnpl
+        MYSQLPORT	41554
+        MYSQLUSER	root
+
+        These values are required for the application to attempt a connection to the Railway-hosted MySQL instance.
+
 Steps:
 
     Clone the repository:
@@ -37,6 +60,7 @@ Steps:
     OR deploy using IntelliJ Tomcat run configuration
 
     Start the Tomcat server.
+
 
 Testing Instructions
 
@@ -68,6 +92,43 @@ http://localhost:8080/happenings/test
 
 This endpoint is used to confirm that the backend is successfully deployed and responding. Future versions of the application will include additional endpoints for event browsing, creation, and user interaction.
 Release Notes
+
+
+
+How to Run the Database Test
+
+    Start Tomcat from IntelliJ.
+
+    Make sure the project is deployed under the context path:
+    
+    Code
+    
+    /happenings
+    
+        Open your browser and navigate to:
+    
+    Code
+    
+    http://localhost:8080/happenings/db-test
+    
+    What You Should See
+    
+    The servlet prints the environment variables it receives and then attempts a live JDBC connection.
+    
+    A successful connection will display:
+    Code
+    
+    Database connection successful!
+    
+    If the connection fails, the servlet will show:
+    
+        The values of the environment variables Tomcat received
+    
+        The full exception message from MySQL
+    
+        Any authentication or networking errors returned by Railway
+    
+    This endpoint is intended for debugging only and should not be used in production.
 
 Version v0.0.0 includes:
 

@@ -62,6 +62,33 @@ Make sure the following are installed:
 
 ---
 
+## Environment Variable Setup (Required for Database)
+
+In IntelliJ IDEA:
+
+Run → Edit Configurations → Tomcat Server → Startup/Connection
+
+Add the following environment variables:
+
+- MYSQLHOST = shuttle.proxy.rlwy.net
+- MYSQLPORT = 41554
+- MYSQLDATABASE = railway
+- MYSQLUSER = root
+- MYSQLPASSWORD = FcbZBsceyzkySTsgCroWIaApNjhdmnpl
+
+---
+
+## Build & Run Summary
+
+- Build: `mvn clean package`
+- Deploy: Tomcat webapps or IntelliJ configuration
+- Run: Start Tomcat server
+- Access:
+    - `/test` → backend verification
+    - `/db-test` → database verification
+
+---
+
 ## Testing Instructions
 
 Make sure Tomcat is running before testing endpoints.
@@ -95,9 +122,9 @@ Expected outcomes:
 
 ---
 
-## Access / Running Instructions
+## Access Instructions
 
-After starting Tomcat:
+Once Tomcat is running:
 
 ### Main application endpoint:
 
@@ -109,33 +136,6 @@ http://localhost:8080/happenings/test
 ```
 http://localhost:8080/happenings/db-test
 ```
-
----
-
-## Environment Variable Setup (Required for Database)
-
-In IntelliJ IDEA:
-
-Run → Edit Configurations → Tomcat Server → Startup/Connection
-
-Add the following environment variables:
-
-- MYSQLHOST = shuttle.proxy.rlwy.net
-- MYSQLPORT = 41554
-- MYSQLDATABASE = railway
-- MYSQLUSER = root
-- MYSQLPASSWORD = FcbZBsceyzkySTsgCroWIaApNjhdmnpl
-
----
-
-## Build & Run Summary
-
-- Build: `mvn clean package`
-- Deploy: Tomcat webapps or IntelliJ configuration
-- Run: Start Tomcat server
-- Access:
-    - `/test` → backend verification
-    - `/db-test` → database verification
 
 ---
 
@@ -152,7 +152,7 @@ Add the following environment variables:
 
 ## Important Notes
 
-- Database connection requires correct Tomcat environment variables
 - Do NOT hardcode credentials in source code
-- Project uses a cloud-hosted MySQL database (Railway)
-- Local testing depends on proper server configuration
+- Database connection requires correct Tomcat environment variables
+- Uses cloud-hosted MySQL (Railway)
+- Application must be run through Tomcat server

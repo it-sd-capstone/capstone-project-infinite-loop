@@ -1,145 +1,158 @@
 # capstone-project-infinite-loop
-A web application that allows users to discover, create, and manage social events. 
 
-Happenings – Event Finder
-Elevator Pitch
+A web application that allows users to discover, create, and manage social events.
 
-Happenings is a full-stack web application that allows users to discover, create, and manage social events. The application is built using Java Servlets and deployed on Apache Tomcat. It currently focuses on validating backend functionality, including servlet routing, Maven builds, and server deployment. Future updates will expand the system into a complete event management platform with database integration, user accounts, and interactive event features.
-Installation Instructions
+# Happenings – Event Finder
 
-To set up and run this project locally, install the following:
+## Elevator Pitch
 
-    Java JDK 17 or higher
-    Apache Maven
-    Apache Tomcat 10 or compatible version
+Happenings is a full-stack web application that allows users to discover, create, and manage social events. Built using Java Servlets and deployed on Apache Tomcat, the project demonstrates backend web development concepts including routing, Maven-based builds, and database integration. It connects to a cloud-hosted MySQL database (Railway) using environment variables configured in the server. The system serves as a foundation for a larger event management platform that will include user accounts, event creation, and interactive social features.
 
-Set up Tomcat/mySQL
-    Open Tomcat Configuration
+---
 
-    Go to Run → Edit Configurations
+## Repository
 
-    Select your Tomcat Server configuration
+https://github.com/it-sd-capstone/capstone-project-infinite-loop
 
-    Open the Startup/Connection Tab
+---
 
-    Click the Startup/Connection tab
+## Installation Instructions
 
-    Add Environment Variables
-        
-        Use the Environment Variables section to add the following key/value pairs:
-        Name	Value
-        MYSQLDATABASE	railway
-        MYSQLHOST	shuttle.proxy.rlwy.net
-        MYSQLPASSWORD	FcbZBsceyzkySTsgCroWIaApNjhdmnpl
-        MYSQLPORT	41554
-        MYSQLUSER	root
+### Prerequisites
 
-        These values are required for the application to attempt a connection to the Railway-hosted MySQL instance.
+Make sure the following are installed:
 
-Steps:
+- Java JDK 17 or higher
+- Apache Maven
+- Apache Tomcat 10+
+- Internet connection (required for Railway database access)
 
-    Clone the repository:
+---
 
-    git clone https://github.com/kvang40cvtc/happenings.git
-    cd happenings
+### Steps to Install
 
-    Build the project using Maven:
+1. Clone the repository:
 
-    mvn clean package
+   ```
+   git clone https://github.com/it-sd-capstone/capstone-project-infinite-loop.git
+   cd capstone-project-infinite-loop
+   ```
 
-    Locate the generated WAR file:
+2. Build the project using Maven:
 
-    target/happenings.war
+   ```
+   mvn clean package
+   ```
 
-    Deploy the WAR file to Tomcat:
+3. Locate the generated WAR file:
 
-    Copy it into:
+   ```
+   target/happenings.war
+   ```
 
-    C:\Program Files\Apache Software Foundation\Tomcat 10\webapps
+4. Deploy the WAR file to Tomcat:
+    - Copy it into:
+      ```
+      C:\Program Files\Apache Software Foundation\Tomcat 10\webapps
+      ```
 
-    OR deploy using IntelliJ Tomcat run configuration
+    - OR deploy using IntelliJ Tomcat Run Configuration.
 
-    Start the Tomcat server.
+5. Start Tomcat server.
 
+---
 
-Testing Instructions
+## Testing Instructions
 
-To verify the backend is working correctly:
+Make sure Tomcat is running before testing endpoints.
 
-    Ensure Tomcat is running and the application is deployed.
+### 1. Backend Test
 
-    Open a web browser.
+Open browser:
 
-    Navigate to:
+   ```
+   http://localhost:8080/happenings/test
+   ```
+### Expected output:
 
-    http://localhost:8080/happenings/test
+   ```
+   Happenings backend is working!
+   ```
+---
 
-Expected output:
+### 2. Database Test
 
-Happenings backend is working!
+Open browser:
 
-If this message appears, it confirms that:
+```
+http://localhost:8080/happenings/db-test
+```
+Expected outcomes:
 
-    Java Servlets are functioning correctly
-    The application builds successfully with Maven
-    The project deploys and runs on Tomcat
+- ✅ Database connection successful → system fully functional
+- ❌ Access denied → incorrect credentials or permissions issue
+- ❌ null:null error → missing environment variables in Tomcat
 
-Running / Access Instructions
+---
 
-Once the server is running, access the application at:
+## Access / Running Instructions
 
+After starting Tomcat:
+
+### Main application endpoint:
+
+```
 http://localhost:8080/happenings/test
+```
 
-This endpoint is used to confirm that the backend is successfully deployed and responding. Future versions of the application will include additional endpoints for event browsing, creation, and user interaction.
-Release Notes
+### Database test endpoint:
+```
+http://localhost:8080/happenings/db-test
+```
 
+---
 
+## Environment Variable Setup (Required for Database)
 
-How to Run the Database Test
+In IntelliJ IDEA:
 
-    Start Tomcat from IntelliJ.
+Run → Edit Configurations → Tomcat Server → Startup/Connection
 
-    Make sure the project is deployed under the context path:
-    
-    Code
-    
-    /happenings
-    
-        Open your browser and navigate to:
-    
-    Code
-    
-    http://localhost:8080/happenings/db-test
-    
-    What You Should See
-    
-    The servlet prints the environment variables it receives and then attempts a live JDBC connection.
-    
-    A successful connection will display:
-    Code
-    
-    Database connection successful!
-    
-    If the connection fails, the servlet will show:
-    
-        The values of the environment variables Tomcat received
-    
-        The full exception message from MySQL
-    
-        Any authentication or networking errors returned by Railway
-    
-    This endpoint is intended for debugging only and should not be used in production.
+Add the following environment variables:
 
-Version v0.0.0 includes:
+- MYSQLHOST = shuttle.proxy.rlwy.net
+- MYSQLPORT = 41554
+- MYSQLDATABASE = railway
+- MYSQLUSER = root
+- MYSQLPASSWORD = FcbZBsceyzkySTsgCroWIaApNjhdmnpl
 
-    Initial Maven project setup
-    Basic servlet implementation (/test endpoint)
-    Successful deployment to Apache Tomcat
-    Validation of full backend stack integration
+---
 
-Notes
+## Build & Run Summary
 
-    No database setup is required for this version.
-    This project is intended to validate backend integration and deployment.
-    The application can be built and run entirely through Maven and Tomcat without requiring additional tools beyond an IDE..
+- Build: `mvn clean package`
+- Deploy: Tomcat webapps or IntelliJ configuration
+- Run: Start Tomcat server
+- Access:
+    - `/test` → backend verification
+    - `/db-test` → database verification
 
+---
+
+## Release Notes (v0.0.0)
+
+- Maven project initialized
+- Servlet backend implemented
+- Tomcat deployment configured
+- `/test` endpoint added
+- `/db-test` endpoint added for MySQL testing
+- Railway MySQL integration configured via environment variables
+
+---
+
+## Important Notes
+
+- Database connection requires correct Tomcat environment variables
+- Do NOT hardcode credentials in source code
+- Project uses a cloud-hosted MySQL database (Railway)
+- Local testing depends on proper server configuration

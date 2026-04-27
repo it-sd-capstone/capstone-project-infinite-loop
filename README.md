@@ -68,13 +68,34 @@ In IntelliJ IDEA:
 
 Run → Edit Configurations → Tomcat Server → Startup/Connection
 
-Add the following environment variables:
+Add the following environment variables for connection to your local MySQL workbench:
 
-- MYSQLHOST = shuttle.proxy.rlwy.net
-- MYSQLPORT = 41554
-- MYSQLDATABASE = railway
-- MYSQLUSER = root
-- MYSQLPASSWORD = FcbZBsceyzkySTsgCroWIaApNjhdmnpl
+- MYSQLHOST 
+- MYSQLPORT
+- MYSQLDATABASE
+- MYSQLUSER
+- MYSQLPASSWORD
+
+---
+
+## MySQL workbench local database setup
+In MySQL workbench, connect to your local server using the root user and password 
+
+Ensure your MySQL workbench server is running
+- Go to task manager, ensure it says 'running' for MySQL workbench, if it does not start it now
+
+Create the database 'happenings'
+- Run the SQL query: 
+CREATE DATABASE happenings;
+
+Import the .sql file 
+- Go to server -> data import 
+- Choose 'import from self-contained file'
+- Select the .sql file found in the db folder
+- Choose the target schema "happenings"
+- Click 'start import'
+
+You should now see all tables and data within the happenings database
 
 ---
 

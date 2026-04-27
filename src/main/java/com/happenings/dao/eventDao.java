@@ -1,4 +1,4 @@
 package com.happenings.dao;
 
-public class eventDao {
+public class EventDao {
 }

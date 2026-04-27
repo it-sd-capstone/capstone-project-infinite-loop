@@ -35,11 +35,17 @@ public class DbTestServlet extends HttpServlet {
             out.println("PASS=" + pass);
 
             // Build JDBC URL
-            String url = "jdbc:mysql://" + host + ":" + port + "/" + db;
+            //String url = "jdbc:mysql://" + host + ":" + port + "/" + db;
             
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection conn = DriverManager.getConnection(url, user, pass);
+            Connection conn = DriverManager.getConnection(
+                    "jdbc:mysql://shuttle.proxy.rlwy.net:41554/railway",
+                    "root",
+                    "FcbZBsceyzkySTsgCroWlaApNjhdmnpl"
+            );
+
+            //Connection conn = DriverManager.getConnection(url, user, pass);
 
             out.println("Database connection successful!");
             conn.close();

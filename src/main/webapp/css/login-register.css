@@ -1,0 +1,208 @@
+/* Login & Register Page */
+body.page-login,
+body.page-register {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-image: url('../images/login-bg.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+main#loginPage,
+main#registerPage {
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    gap: 130px;
+    padding: 0 60px;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* Left Side - Text */
+.welcome-section {
+    width: 700px;
+    color: #fff;
+    margin-top: -80px;
+}
+
+.welcome-section h1 {
+    font-size: 75px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    line-height: 1.1;
+}
+
+.welcome-section p {
+    font-size: 25px;
+    color: #ddd;
+}
+
+/* Right Side - Login/Register/ForgotPassword Box */
+.login-section,
+.register-section,
+.forgot-section {
+    background: rgba(6, 15, 19, 0.75);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 40px;
+    border-radius: 12px;
+    width: 360px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    animation: fadeIn 0.5s ease-out;
+    margin-top: -80px;
+}
+
+.login-section h3,
+.register-section h3,
+.forgot-section h3 {
+    color: #06b6d4;
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 24px;
+}
+
+.login-section form,
+.register-section form,
+.forgot-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.login-section form input,
+.register-section form input,
+.forgot-section form input {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1.5px solid rgba(6, 182, 212, 0.3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 15px;
+    color: #e0f7fa;
+    transition: border-color 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.login-section form input:focus,
+.register-section form input:focus,
+.forgot-section form input:focus {
+    border-color: #06b6d4;
+    background: rgba(255, 255, 255, 0.12);
+    outline: none;
+}
+
+.login-section form input::placeholder,
+.register-section form input::placeholder,
+.forgot-section form input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.login-section form button,
+.register-section form button,
+.forgot-section form button {
+    background-color: #06b6d4;
+    color: #000;
+    border: none;
+    font-weight: 700;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 3px 8px rgba(6, 182, 212, 0.5);
+}
+
+.login-section form button:hover,
+.register-section form button:hover,
+.forgot-section form button:hover {
+    background-color: #f43f5e;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+#loginMessage,
+#registerMessage,
+#resetMessage {
+    font-size: 14px;
+    text-align: center;
+    min-height: 20px;
+    color: #f43f5e;
+    margin: 0;
+}
+
+.register-link {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.register-link a {
+    color: #06b6d4;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.register-link a:hover {
+    color: #f43f5e;
+    text-decoration: underline;
+}
+
+/* Forgot Password link in login form */
+.forgot-password-link {
+    text-align: right;
+    margin: -4px 0 0;
+    font-size: 13px;
+}
+
+.forgot-password-link a {
+    color: #06b6d4;
+    text-decoration: none;
+}
+
+.forgot-password-link a:hover {
+    color: #f43f5e;
+    text-decoration: underline;
+}
+
+/* Categories in Register */
+.categories p {
+    color: #e0f7fa;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.categories label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(6,182,212,0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #e0f7fa;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.categories label:hover {
+    background: rgba(6,182,212,0.2);
+    border-color: #06b6d4;
+}
+
+.categories input[type="checkbox"] {
+    accent-color: #06b6d4;
+    width: 16px;
+    height: 16px;
+}

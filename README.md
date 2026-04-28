@@ -5,7 +5,7 @@ Happenings is a Java servlet web application for discovering, creating, and mana
 ---
 
 ### Requirements
-Make sure the following are installed:
+Make sure the following are installed
 - Java JDK 17 or higher
 - Apache Maven
 - Apache Tomcat 10+
@@ -26,7 +26,7 @@ Make sure the following are installed:
       ```
       CREATE DATABASE happenings;
       ```  
-   - Then import the SQL file:
+   - Then import the SQL file
      - Go to Server → Data Import 
      - Select Import from Self-Contained File 
      - Choose the .sql file in the /db folder 
@@ -58,7 +58,7 @@ Make sure the following are installed:
    target/happenings.war is created
    ```
       
-5. Deploy the WAR file to Tomcat:
+5. Deploy the WAR file to Tomcat
    - Option A: Manual deployment 
      - Copy it into happenings.war
      - Paste into Tomcat/webapps/
@@ -69,7 +69,7 @@ Make sure the following are installed:
      - Run Tomcat from IntelliJ
          
 6. Run the application 
-   - Open:
+   - Open
    ```
    http://localhost:8080/happenings/test
    ```
@@ -81,7 +81,7 @@ Make sure the following are installed:
 ### Test 1: Backend Endpoint
 Steps:
 1. Start Tomcat server
-2. Open in browser:
+2. Open
 ```
 http://localhost:8080/happenings/test
 ```
@@ -93,7 +93,7 @@ Expected result:
 Steps:
 1. Ensure MySQL server is running
 2. Confirm environment variables are set in Tomcat
-3. Open in browser
+3. Open
 ```
 http://localhost:8080/happenings/db-test
 ```

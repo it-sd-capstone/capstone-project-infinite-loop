@@ -78,17 +78,14 @@ Make sure the following are installed:
    http://localhost:8080/happenings/test
    ```
    Expected result:
-   ```
-   Happenings backend is working!
-   ```
+   - Happenings backend is working!
 ---
 
 ## Testing
 ### Test 1: Backend Endpoint
 Steps:
 1. Start Tomcat server
-2. Open browser
-3. Open in browser:
+2. Open in browser:
 ```
 http://localhost:8080/happenings/test
 ```

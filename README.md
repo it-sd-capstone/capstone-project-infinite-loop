@@ -81,15 +81,27 @@ Make sure the following are installed
      ```
      http://localhost:8080/happenings_war_exploded/test
      ```
-   Note: The URL differs because IntelliJ deploys the app using the artifact name (happenings_war_exploded).
+   Note: 
+   - The URL differs because IntelliJ deploys the app using the artifact name (happenings_war_exploded).
 
 6. Run the application 
-   - Open
+   - After deploying and starting Tomcat, open one of the following URLs depending on your setup:
+    - If you used manual deployment (WAR file in /webapps):
    ```
    http://localhost:8080/happenings/test
    ```
+    - If you used IntelliJ deployment (war exploded):
+   ```
+   http://localhost:8080/happenings_war_exploded/test
+   ```
    Expected result:
    - Happenings backend is working!
+    
+   Note: 
+   - If you see a 404 error, double-check: 
+     - the application name in your Tomcat deployment
+     - whether Tomcat is running
+     - which deployment option you used
 ---
 
 ## Testing

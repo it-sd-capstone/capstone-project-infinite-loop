@@ -1,10 +1,21 @@
-# Happenings – Event Finder
+# Happenings – The Event Finder
 ## Overview
-Happenings is a Java servlet web application for discovering, creating, and managing social events. It runs on Apache Tomcat and is built using Maven. The project includes basic servlet routing and connects to a MySQL database using environment variables configured in the server. Both local and Railway-hosted databases were used during development.  The current version is a working skeleton of the system. Backend and database features are still being developed and tested. Future work includes user accounts, event creation, and additional functionality.
+Happenings is our capstone web application that helps users discover, create, and manage social events. 
+Backend is built with Java Servlets and Maven, deployed on Apache Tomcat, and is connected to a MySQL database. 
+Our Application supports event-related endpoints and database connectivity, with plans for user accounts and full event management features.
 
 ---
 
-### Requirements
+### Link to our Official site
+You can access the deployed version here:
+```
+https://capstone-project-infinite-loop-production.up.railway.app/
+```
+Note:
+- Some features may still be in development
+- Backend test endpoints may not be publicly exposed
+
+### Installation Instructions
 Make sure the following are installed
 - Java JDK 17 or higher
 - Apache Maven
@@ -13,7 +24,7 @@ Make sure the following are installed
 - MySQL Workbench (used for database setup and importing the schema)
 ---
 
-### Steps to Install
+### Setup Steps
 1. Clone the repository
    ```
    git clone https://github.com/it-sd-capstone/capstone-project-infinite-loop.git
@@ -26,7 +37,7 @@ Make sure the following are installed
       ```
       CREATE DATABASE happenings;
       ```  
-   - Then import the SQL file
+   - Import schema:
      - Go to Server → Data Import 
      - Select Import from Self-Contained File 
      - Choose the .sql file in the /db folder 
@@ -35,10 +46,9 @@ Make sure the following are installed
      
    Expected result:
     - Database is created
-    - Tables are visible in MySQL Workbench 
      
-3. Set environment variables
-   - In IntelliJ Tomcat configuration:
+3. Configure environment variables
+   - Set the following in your Tomcat configuration:
      - MYSQLHOST 
      - MYSQLPORT 
      - MYSQLDATABASE 
@@ -67,7 +77,12 @@ Make sure the following are installed
    - Option B: IntelliJ deployment (recommended)
      - Add artifact: happenings:war exploded 
      - Run Tomcat from IntelliJ
-         
+     - Access:
+     ```
+     http://localhost:8080/happenings_war_exploded/test
+     ```
+   Note: The URL differs because IntelliJ deploys the app using the artifact name (happenings_war_exploded).
+
 6. Run the application 
    - Open
    ```
@@ -78,12 +93,19 @@ Make sure the following are installed
 ---
 
 ## Testing
+This project currently uses manual endpoint testing.
+
 ### Test 1: Backend Endpoint
 Steps:
 1. Start Tomcat server
 2. Open
+Option A:
 ```
 http://localhost:8080/happenings/test
+```
+Option B:
+```
+http://localhost:8080/happenings_war_exploded/test
 ```
 Expected result:
 - Happenings backend is working!
@@ -94,9 +116,14 @@ Steps:
 1. Ensure MySQL server is running
 2. Confirm environment variables are set in Tomcat
 3. Open
+   Option A:
 ```
-http://localhost:8080/happenings/db-test
+http://localhost:8080/happenings/test
+```
+Option B:
+```
+http://localhost:8080/happenings_war_exploded/test
 ```
 Expected result:
-- Database connection successful → system is working correctly
-- Error message → check credentials or environment variables
+- Success → database connected
+- Error → configuration issue

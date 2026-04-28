@@ -1,7 +1,12 @@
 # Happenings – The Event Finder
 ## Overview
+<<<<<<< HEAD
 Happenings is our capstone web application that helps users discover, create, and manage social events. 
 Backend is built with Java Servlets and Maven, deployed on Apache Tomcat, and is connected to a MySQL database. 
+=======
+Happenings is our capstone web application that helps users discover, create, and manage social events.
+Backend is built with Java Servlets and Maven, deployed on Apache Tomcat, and is connected to a MySQL database.
+>>>>>>> 7fa3aa711f0e1e492a4a6def33b99b9e794cc99a
 Our Application supports event-related endpoints and database connectivity, with plans for user accounts and full event management features.
 
 ---
@@ -30,6 +35,7 @@ Make sure the following are installed
    git clone https://github.com/it-sd-capstone/capstone-project-infinite-loop.git
    cd capstone-project-infinite-loop
    ```
+<<<<<<< HEAD
    
 2. Create the database  
    - Open MySQL Workbench and connect to your local MySQL server.  
@@ -59,6 +65,37 @@ Make sure the following are installed
    Expected result:
    - Application can connect to the database at runtime 
      
+=======
+
+2. Create the database
+    - Open MySQL Workbench and connect to your local MySQL server.
+    - Run:
+       ```
+       CREATE DATABASE happenings;
+       ```  
+    - Import schema:
+        - Go to Server → Data Import
+        - Select Import from Self-Contained File
+        - Choose the .sql file in the /db folder
+        - Select schema: happenings
+        - Click Start Import
+
+   Expected result:
+    - Database is created
+
+3. Configure environment variables
+    - Set the following in your Tomcat configuration:
+        - MYSQLHOST
+        - MYSQLPORT
+        - MYSQLDATABASE
+        - MYSQLUSER
+        - MYSQLPASSWORD
+    - These must match your local or cloud MySQL setup.
+
+   Expected result:
+    - Application can connect to the database at runtime
+
+>>>>>>> 7fa3aa711f0e1e492a4a6def33b99b9e794cc99a
 4. Build the project
    ```
    mvn clean package
@@ -67,6 +104,7 @@ Make sure the following are installed
    ```
    target/happenings.war is created
    ```
+<<<<<<< HEAD
       
 5. Deploy the WAR file to Tomcat
    - Option A: Manual deployment 
@@ -86,6 +124,27 @@ Make sure the following are installed
 
 6. Run the application 
    - After deploying and starting Tomcat, open one of the following URLs depending on your setup:
+=======
+
+5. Deploy the WAR file to Tomcat
+    - Option A: Manual deployment
+        - Copy it into happenings.war
+        - Paste into Tomcat/webapps/
+        - Start Tomcat server
+
+    - Option B: IntelliJ deployment (recommended)
+        - Add artifact: happenings:war exploded
+        - Run Tomcat from IntelliJ
+        - Access:
+      ```
+      http://localhost:8080/happenings_war_exploded/test
+      ```
+   Note:
+    - The URL differs because IntelliJ deploys the app using the artifact name (happenings_war_exploded).
+
+6. Run the application
+    - After deploying and starting Tomcat, open one of the following URLs depending on your setup:
+>>>>>>> 7fa3aa711f0e1e492a4a6def33b99b9e794cc99a
     - If you used manual deployment (WAR file in /webapps):
    ```
    http://localhost:8080/happenings/test
@@ -95,6 +154,7 @@ Make sure the following are installed
    http://localhost:8080/happenings_war_exploded/test
    ```
    Expected result:
+<<<<<<< HEAD
    - Happenings backend is working!
     
    Note: 
@@ -102,6 +162,15 @@ Make sure the following are installed
      - the application name in your Tomcat deployment
      - whether Tomcat is running
      - which deployment option you used
+=======
+    - Happenings backend is working!
+
+   Note:
+    - If you see a 404 error, double-check:
+        - the application name in your Tomcat deployment
+        - whether Tomcat is running
+        - which deployment option you used
+>>>>>>> 7fa3aa711f0e1e492a4a6def33b99b9e794cc99a
 ---
 
 ## Testing
@@ -111,7 +180,11 @@ This project currently uses manual endpoint testing.
 Steps:
 1. Start Tomcat server
 2. Open
+<<<<<<< HEAD
 Option A:
+=======
+   Option A:
+>>>>>>> 7fa3aa711f0e1e492a4a6def33b99b9e794cc99a
 ```
 http://localhost:8080/happenings/test
 ```

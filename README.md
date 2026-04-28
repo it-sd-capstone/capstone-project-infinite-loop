@@ -1,7 +1,7 @@
 # Happenings – The Event Finder
 ## Overview
-Happenings is our capstone web application that helps users discover, create, and manage social events. 
-Backend is built with Java Servlets and Maven, deployed on Apache Tomcat, and is connected to a MySQL database. 
+Happenings is our capstone web application that helps users discover, create, and manage social events.
+Backend is built with Java Servlets and Maven, deployed on Apache Tomcat, and is connected to a MySQL database.
 Our Application supports event-related endpoints and database connectivity, with plans for user accounts and full event management features.
 
 ---
@@ -30,35 +30,35 @@ Make sure the following are installed
    git clone https://github.com/it-sd-capstone/capstone-project-infinite-loop.git
    cd capstone-project-infinite-loop
    ```
-   
-2. Create the database  
-   - Open MySQL Workbench and connect to your local MySQL server.  
-   - Run:
-      ```
-      CREATE DATABASE happenings;
-      ```  
-   - Import schema:
-     - Go to Server → Data Import 
-     - Select Import from Self-Contained File 
-     - Choose the .sql file in the /db folder 
-     - Select schema: happenings 
-     - Click Start Import  
-     
+
+2. Create the database
+    - Open MySQL Workbench and connect to your local MySQL server.
+    - Run:
+       ```
+       CREATE DATABASE happenings;
+       ```  
+    - Import schema:
+        - Go to Server → Data Import
+        - Select Import from Self-Contained File
+        - Choose the .sql file in the /db folder
+        - Select schema: happenings
+        - Click Start Import
+
    Expected result:
     - Database is created
-     
+
 3. Configure environment variables
-   - Set the following in your Tomcat configuration:
-     - MYSQLHOST 
-     - MYSQLPORT 
-     - MYSQLDATABASE 
-     - MYSQLUSER 
-     - MYSQLPASSWORD
-   - These must match your local or cloud MySQL setup.
-   
+    - Set the following in your Tomcat configuration:
+        - MYSQLHOST
+        - MYSQLPORT
+        - MYSQLDATABASE
+        - MYSQLUSER
+        - MYSQLPASSWORD
+    - These must match your local or cloud MySQL setup.
+
    Expected result:
-   - Application can connect to the database at runtime 
-     
+    - Application can connect to the database at runtime
+
 4. Build the project
    ```
    mvn clean package
@@ -67,25 +67,25 @@ Make sure the following are installed
    ```
    target/happenings.war is created
    ```
-      
+
 5. Deploy the WAR file to Tomcat
-   - Option A: Manual deployment 
-     - Copy it into happenings.war
-     - Paste into Tomcat/webapps/
-     - Start Tomcat server
+    - Option A: Manual deployment
+        - Copy it into happenings.war
+        - Paste into Tomcat/webapps/
+        - Start Tomcat server
 
-   - Option B: IntelliJ deployment (recommended)
-     - Add artifact: happenings:war exploded 
-     - Run Tomcat from IntelliJ
-     - Access:
-     ```
-     http://localhost:8080/happenings_war_exploded/test
-     ```
-   Note: 
-   - The URL differs because IntelliJ deploys the app using the artifact name (happenings_war_exploded).
+    - Option B: IntelliJ deployment (recommended)
+        - Add artifact: happenings:war exploded
+        - Run Tomcat from IntelliJ
+        - Access:
+      ```
+      http://localhost:8080/happenings_war_exploded/test
+      ```
+   Note:
+    - The URL differs because IntelliJ deploys the app using the artifact name (happenings_war_exploded).
 
-6. Run the application 
-   - After deploying and starting Tomcat, open one of the following URLs depending on your setup:
+6. Run the application
+    - After deploying and starting Tomcat, open one of the following URLs depending on your setup:
     - If you used manual deployment (WAR file in /webapps):
    ```
    http://localhost:8080/happenings/test
@@ -95,13 +95,13 @@ Make sure the following are installed
    http://localhost:8080/happenings_war_exploded/test
    ```
    Expected result:
-   - Happenings backend is working!
-    
-   Note: 
-   - If you see a 404 error, double-check: 
-     - the application name in your Tomcat deployment
-     - whether Tomcat is running
-     - which deployment option you used
+    - Happenings backend is working!
+
+   Note:
+    - If you see a 404 error, double-check:
+        - the application name in your Tomcat deployment
+        - whether Tomcat is running
+        - which deployment option you used
 ---
 
 ## Testing
@@ -111,7 +111,7 @@ This project currently uses manual endpoint testing.
 Steps:
 1. Start Tomcat server
 2. Open
-Option A:
+   Option A:
 ```
 http://localhost:8080/happenings/test
 ```

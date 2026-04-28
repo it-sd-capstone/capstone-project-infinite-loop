@@ -1,179 +1,116 @@
-# capstone-project-infinite-loop
-
-A web application that allows users to discover, create, and manage social events.
-
 # Happenings – Event Finder
+## Overview
+Happenings is a Java servlet web application for discovering, creating, and managing social events. It runs on Apache Tomcat and is built using Maven.
 
-## Elevator Pitch
+The project includes basic servlet routing and connects to a MySQL database using environment variables configured in the server. Both local and Railway-hosted databases were used during development.
 
-Happenings is a full-stack web application that allows users to discover, create, and manage social events. Built using Java Servlets and deployed on Apache Tomcat, the project demonstrates backend web development concepts including routing, Maven-based builds, and database integration. It connects to a cloud-hosted MySQL database (Railway) using environment variables configured in the server. The system serves as a foundation for a larger event management platform that will include user accounts, event creation, and interactive social features.
-
----
-
-## Repository
-
-https://github.com/it-sd-capstone/capstone-project-infinite-loop
+The current version is a working skeleton of the system. Backend and database features are still being developed and tested. Future work includes user accounts, event creation, and additional functionality.
 
 ---
 
-## Installation Instructions
-
-### Prerequisites
-
+### Requirements
 Make sure the following are installed:
-
 - Java JDK 17 or higher
 - Apache Maven
 - Apache Tomcat 10+
-- Internet connection (required for Railway database access)
-
+- MySQL Server (required for database functionality)
+- MySQL Workbench (used for database setup and importing the schema)
 ---
 
 ### Steps to Install
-
 1. Clone the repository:
-
    ```
    git clone https://github.com/it-sd-capstone/capstone-project-infinite-loop.git
    cd capstone-project-infinite-loop
    ```
-
-2. Build the project using Maven:
-
+   
+2. Create the database
+   Open MySQL Workbench and connect to your local MySQL server.
+   Run:
+   ```
+   CREATE DATABASE happenings;
+   ```
+   Then import the SQL file:
+    - Go to Server → Data Import 
+    - Select Import from Self-Contained File 
+    - Choose the .sql file in the /db folder 
+    - Select schema: happenings 
+    - Click Start Import 
+      
+   Expected result:
+    - Database is created
+    - Tables are visible in MySQL Workbench 
+     
+3. Set environment variables
+   In IntelliJ Tomcat configuration:
+    - MYSQLHOST 
+    - MYSQLPORT 
+    - MYSQLDATABASE 
+    - MYSQLUSER 
+    - MYSQLPASSWORD
+   These must match your local or cloud MySQL setup.
+   
+   Expected result:
+    - Application can connect to the database at runtime 
+     
+4. Build the project:
    ```
    mvn clean package
    ```
-
-3. Locate the generated WAR file:
-
+   Expected result:
    ```
-   target/happenings.war
+   target/happenings.war is created
    ```
+      
+5. Deploy the WAR file to Tomcat:
+   Option A: Manual deployment 
+     - Copy it into happenings.war
+     - Paste into Tomcat/webapps/
+     - Start Tomcat server
 
-4. Deploy the WAR file to Tomcat:
-    - Copy it into:
-      ```
-      C:\Program Files\Apache Software Foundation\Tomcat 10\webapps
-      ```
-
-    - OR deploy using IntelliJ Tomcat Run Configuration.
-
-5. Start Tomcat server.
-
----
-
-## Environment Variable Setup (Required for Database)
-
-In IntelliJ IDEA:
-
-Run → Edit Configurations → Tomcat Server → Startup/Connection
-
-Add the following environment variables for connection to your local MySQL workbench:
-
-- MYSQLHOST 
-- MYSQLPORT
-- MYSQLDATABASE
-- MYSQLUSER
-- MYSQLPASSWORD
-
----
-
-## MySQL workbench local database setup
-In MySQL workbench, connect to your local server using the root user and password 
-
-Ensure your MySQL workbench server is running
-- Go to task manager, ensure it says 'running' for MySQL workbench, if it does not start it now
-
-Create the database 'happenings'
-- Run the SQL query: 
-CREATE DATABASE happenings;
-
-Import the .sql file 
-- Go to server -> data import 
-- Choose 'import from self-contained file'
-- Select the .sql file found in the db folder
-- Choose the target schema "happenings"
-- Click 'start import'
-
-You should now see all tables and data within the happenings database
-
----
-
-## Build & Run Summary
-
-- Build: `mvn clean package`
-- Deploy: Tomcat webapps or IntelliJ configuration
-- Run: Start Tomcat server
-- Access:
-    - `/test` → backend verification
-    - `/db-test` → database verification
-
----
-
-## Testing Instructions
-
-Make sure Tomcat is running before testing endpoints.
-
-### 1. Backend Test
-
-Open browser:
-
+   Option B: IntelliJ deployment (recommended)
+     - Add artifact: happenings:war exploded
+     - Run Tomcat from IntelliJ
+      
+6. Run the application 
+   Open:
    ```
    http://localhost:8080/happenings/test
    ```
-### Expected output:
-
+   Expected result:
    ```
    Happenings backend is working!
    ```
 ---
 
-### 2. Database Test
+## Testing Instructions
+Make sure Tomcat is running before testing endpoints.
 
-Open browser:
+### Test 1: Backend Endpoint
+Open in browser:
+   ```
+   http://localhost:8080/happenings/test
+   ```
+Steps:
+1. Start Tomcat server
+2. Open browser
+3. Enter URL above
 
+Expected result:
+- Happenings backend is working!
+---
+
+### Test 2: Database Connection
+
+Open in browser:
 ```
 http://localhost:8080/happenings/db-test
 ```
-Expected outcomes:
+Steps:
+1. Ensure MySQL server is running
+2. Confirm environment variables are set in Tomcat
+3. Open URL above in browser
 
-- ✅ Database connection successful → system fully functional
-- ❌ Access denied → incorrect credentials or permissions issue
-- ❌ null:null error → missing environment variables in Tomcat
-
----
-
-## Access Instructions
-
-Once Tomcat is running:
-
-### Main application endpoint:
-
-```
-http://localhost:8080/happenings/test
-```
-
-### Database test endpoint:
-```
-http://localhost:8080/happenings/db-test
-```
-
----
-
-## Release Notes (v0.0.0)
-
-- Maven project initialized
-- Servlet backend implemented
-- Tomcat deployment configured
-- `/test` endpoint added
-- `/db-test` endpoint added for MySQL testing
-- Railway MySQL integration configured via environment variables
-
----
-
-## Important Notes
-
-- Do NOT hardcode credentials in source code
-- Database connection requires correct Tomcat environment variables
-- Uses cloud-hosted MySQL (Railway)
-- Application must be run through Tomcat server
+Expected result:
+- Database connection successful → system is working correctly
+- Error message → check credentials or environment variables

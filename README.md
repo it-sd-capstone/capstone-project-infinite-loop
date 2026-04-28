@@ -20,36 +20,36 @@ Make sure the following are installed:
    cd capstone-project-infinite-loop
    ```
    
-2. Create the database
-   Open MySQL Workbench and connect to your local MySQL server. 
-      Run:
-            ```
-            CREATE DATABASE happenings;
-            ```
-      Then import the SQL file:
-      - Go to Server → Data Import 
-      - Select Import from Self-Contained File 
-      - Choose the .sql file in the /db folder 
-      - Select schema: happenings 
-      - Click Start Import 
+2. Create the database  
+   - Open MySQL Workbench and connect to your local MySQL server.  
+   - Run:
+      ```
+      CREATE DATABASE happenings;
+      ```  
+   - Then import the SQL file:
+     - Go to Server → Data Import 
+     - Select Import from Self-Contained File 
+     - Choose the .sql file in the /db folder 
+     - Select schema: happenings 
+     - Click Start Import  
      
-      Expected result:
-      - Database is created
-      - Tables are visible in MySQL Workbench 
+   Expected result:
+    - Database is created
+    - Tables are visible in MySQL Workbench 
      
 3. Set environment variables
-   In IntelliJ Tomcat configuration:
-   - MYSQLHOST 
-   - MYSQLPORT 
-   - MYSQLDATABASE 
-   - MYSQLUSER 
-   - MYSQLPASSWORD
-   These must match your local or cloud MySQL setup.
+   - In IntelliJ Tomcat configuration:
+     - MYSQLHOST 
+     - MYSQLPORT 
+     - MYSQLDATABASE 
+     - MYSQLUSER 
+     - MYSQLPASSWORD
+   - These must match your local or cloud MySQL setup.
    
    Expected result:
    - Application can connect to the database at runtime 
      
-4. Build the project:
+4. Build the project
    ```
    mvn clean package
    ```
@@ -59,17 +59,17 @@ Make sure the following are installed:
    ```
       
 5. Deploy the WAR file to Tomcat:
-   Option A: Manual deployment 
-   - Copy it into happenings.war
-   - Paste into Tomcat/webapps/
-   - Start Tomcat server
+   - Option A: Manual deployment 
+     - Copy it into happenings.war
+     - Paste into Tomcat/webapps/
+     - Start Tomcat server
 
-   Option B: IntelliJ deployment (recommended)
-      - Add artifact: happenings:war exploded 
-      - Run Tomcat from IntelliJ
+   - Option B: IntelliJ deployment (recommended)
+     - Add artifact: happenings:war exploded 
+     - Run Tomcat from IntelliJ
          
 6. Run the application 
-   Open:
+   - Open:
    ```
    http://localhost:8080/happenings/test
    ```

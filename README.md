@@ -83,34 +83,27 @@ Make sure the following are installed:
    ```
 ---
 
-## Testing Instructions
-Make sure Tomcat is running before testing endpoints.
-
+## Testing
 ### Test 1: Backend Endpoint
-Open in browser:
-   ```
-   http://localhost:8080/happenings/test
-   ```
 Steps:
 1. Start Tomcat server
 2. Open browser
-3. Enter URL above
-
+3. Open in browser:
+```
+http://localhost:8080/happenings/test
+```
 Expected result:
 - Happenings backend is working!
 ---
 
 ### Test 2: Database Connection
-
-Open in browser:
-```
-http://localhost:8080/happenings/db-test
-```
 Steps:
 1. Ensure MySQL server is running
 2. Confirm environment variables are set in Tomcat
-3. Open URL above in browser
-
+3. Open in browser
+```
+http://localhost:8080/happenings/db-test
+```
 Expected result:
 - Database connection successful → system is working correctly
 - Error message → check credentials or environment variables

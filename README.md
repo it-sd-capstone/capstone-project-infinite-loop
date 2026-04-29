@@ -1,158 +1,117 @@
-# capstone-project-infinite-loop
-
-A web application that allows users to discover, create, and manage social events.
-
-# Happenings – Event Finder
-
-## Elevator Pitch
-
-Happenings is a full-stack web application that allows users to discover, create, and manage social events. Built using Java Servlets and deployed on Apache Tomcat, the project demonstrates backend web development concepts including routing, Maven-based builds, and database integration. It connects to a cloud-hosted MySQL database (Railway) using environment variables configured in the server. The system serves as a foundation for a larger event management platform that will include user accounts, event creation, and interactive social features.
-
+# Happenings – The Event Finder
+## Overview
+Happenings is our capstone web application that helps users discover, create, and manage social events. 
+The backend is built using Java Spring Boot, Maven, MySQL, and it runs on an embedded server. 
+It also provides REST-style endpoints that handle event-related features and data. 
+We have successfully deployed our application publicly on Render.
 ---
 
-## Repository
-
-https://github.com/it-sd-capstone/capstone-project-infinite-loop
-
+### Installation Instructions (Local Development)
+Make sure the following are installed
+- Java 21+
+- Spring Boot 3.3.2
+- Maven 3.9+
+- MySQL Server
+- Git
+- Embedded Tomcat (via Spring Boot)
 ---
 
-## Installation Instructions
-
-### Prerequisites
-
-Make sure the following are installed:
-
-- Java JDK 17 or higher
-- Apache Maven
-- Apache Tomcat 10+
-- Internet connection (required for Railway database access)
-
----
-
-### Steps to Install
-
-1. Clone the repository:
-
+### Setup Steps
+1. Clone the repository
    ```
    git clone https://github.com/it-sd-capstone/capstone-project-infinite-loop.git
    cd capstone-project-infinite-loop
    ```
 
-2. Build the project using Maven:
+2. Configure Database (Optional for local testing)
+    - If using the database locally:
+       ```
+       CREATE DATABASE happenings;
+       ```  
+    - Import the database schema from the `/db` folder using MySQL Workbench:
+       - Go to Server → Data Import
+       - Select "Import from Self-Contained File"
+       - Choose the `.sql` file in `/db`
+       - Select the `happenings` schema
+       - Click Start Import
 
+3. Environment Variables
+    - Set the following environment variables for database connection:
+      - MYSQLHOST – database host (e.g. localhost or cloud DB host)
+      - MYSQLPORT – database port (default: 3306)
+      - MYSQLDATABASE – database name (happenings)
+      - MYSQLUSER – database username
+      - MYSQLPASSWORD – database password
+      
+    - Where to set them:
+      - Locally: IDE run configuration or system environment variables
+      - On Render: Enviroment tab in the service dashboard
+
+4. Build the project
    ```
    mvn clean package
    ```
-
-3. Locate the generated WAR file:
-
+   This will generate:
    ```
-   target/happenings.war
+   target/happenings.jar
    ```
 
-4. Deploy the WAR file to Tomcat:
-    - Copy it into:
-      ```
-      C:\Program Files\Apache Software Foundation\Tomcat 10\webapps
-      ```
-
-    - OR deploy using IntelliJ Tomcat Run Configuration.
-
-5. Start Tomcat server.
-
----
-
-## Environment Variable Setup (Required for Database)
-
-In IntelliJ IDEA:
-
-Run → Edit Configurations → Tomcat Server → Startup/Connection
-
-Add the following environment variables:
-
-- MYSQLHOST = shuttle.proxy.rlwy.net
-- MYSQLPORT = 41554
-- MYSQLDATABASE = railway
-- MYSQLUSER = root
-- MYSQLPASSWORD = FcbZBsceyzkySTsgCroWIaApNjhdmnpl
-
----
-
-## Build & Run Summary
-
-- Build: `mvn clean package`
-- Deploy: Tomcat webapps or IntelliJ configuration
-- Run: Start Tomcat server
-- Access:
-    - `/test` → backend verification
-    - `/db-test` → database verification
-
----
-
-## Testing Instructions
-
-Make sure Tomcat is running before testing endpoints.
-
-### 1. Backend Test
-
-Open browser:
-
+5. Run the application locally
+   Option 1: Run with Maven
    ```
-   http://localhost:8080/happenings/test
+   mvn spring-boot:run
    ```
-### Expected output:
+   
+   Option 2: run the JAR directly
+   ```
+   java -jar target/happenings.jar
+   ```
 
+   Then open:
    ```
-   Happenings backend is working!
+   http://localhost:8080/
    ```
 ---
 
-### 2. Database Test
-
-Open browser:
-
+## Testing
+### 1. Basic Server Test
+Open:
 ```
-http://localhost:8080/happenings/db-test
+http://localhost:8080/
 ```
-Expected outcomes:
-
-- ✅ Database connection successful → system fully functional
-- ❌ Access denied → incorrect credentials or permissions issue
-- ❌ null:null error → missing environment variables in Tomcat
-
+Expected result:
+```
+Happenings is running!
+```
 ---
 
-## Access Instructions
-
-Once Tomcat is running:
-
-### Main application endpoint:
-
+### 2. Error Handling Test
+Open a non-existent route:
 ```
-http://localhost:8080/happenings/test
+http://localhost:8080/invalid-route
 ```
-
-### Database test endpoint:
-```
-http://localhost:8080/happenings/db-test
-```
-
+Expected result:
+- HTTP 404 response
 ---
 
-## Release Notes (v0.0.0)
-
-- Maven project initialized
-- Servlet backend implemented
-- Tomcat deployment configured
-- `/test` endpoint added
-- `/db-test` endpoint added for MySQL testing
-- Railway MySQL integration configured via environment variables
-
+### 3. Events API Test
+Open:
+```
+http://localhost:8080/api/events
+```
+Expected result:
+- JSON list of events
 ---
 
-## Important Notes
+### Render Deployment 
+The application is deployed on Render as a Spring Boot JAR service.
 
-- Do NOT hardcode credentials in source code
-- Database connection requires correct Tomcat environment variables
-- Uses cloud-hosted MySQL (Railway)
-- Application must be run through Tomcat server
+### Build Process
+- Maven builds the project
+- Spring Boot packages into executable JAR
+- Render runs:
+```
+java -jar happenings.jar
+```
+Live URL
+https://capstone-project-infinite-loop-f0nr.onrender.com/

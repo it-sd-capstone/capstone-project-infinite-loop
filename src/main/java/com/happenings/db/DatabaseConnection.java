@@ -7,11 +7,11 @@ public class DatabaseConnection {
 
     public static Connection getConnection() throws Exception {
 
-        String host = System.getenv("MYSQLHOST");
-        String port = System.getenv("MYSQLPORT");
-        String db   = System.getenv("MYSQLDATABASE");
-        String user = System.getenv("MYSQLUSER");
-        String pass = System.getenv("MYSQLPASSWORD");
+        String host = System.getenv("DB_HOST");
+        String port = System.getenv("DB_PORT");
+        String db   = System.getenv("DB_NAME");
+        String user = System.getenv("DB_USER");
+        String pass = System.getenv("DB_PASSWORD");
 
         String url = "jdbc:mysql://" + host + ":" + port + "/" + db;
 

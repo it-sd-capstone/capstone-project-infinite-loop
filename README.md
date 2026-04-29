@@ -32,7 +32,7 @@ Make sure the following are installed
    ```
 
 2. Create the database
-    - Open MySQL Workbench and connect to your local MySQL server.
+    - Open MySQL Workbench and connect to your local MySQL server"
     - Run:
        ```
        CREATE DATABASE happenings;

@@ -1,7 +1,7 @@
 # Happenings – The Event Finder
 ## Overview
 Happenings is our capstone web application that helps users discover, create, and manage social events. 
-The backend is built using Java with Spring Boot, Maven, MySQL, and it runs on an embedded server. 
+The backend is built using Java Spring Boot, Maven, MySQL, and it runs on an embedded server. 
 It also provides REST-style endpoints that handle event-related features and data. 
 We have successfully deployed our application publicly on Render.
 ---
@@ -9,10 +9,11 @@ We have successfully deployed our application publicly on Render.
 ### Installation Instructions (Local Development)
 Make sure the following are installed
 - Java 21+
+- Spring Boot 3.3.2
 - Maven 3.9+
-- Apache Tomcat 10+
 - MySQL Server
 - Git
+- Embedded Tomcat (via Spring Boot)
 ---
 
 ### Setup Steps
@@ -99,16 +100,16 @@ Open:
 http://localhost:8080/api/events
 ```
 Expected result:
-- ["Music Festival","Art Fair","Food Truck Rally"]
+- JSON list of events
 ---
 
 ### Render Deployment 
-The application is deployed using Docker on Render.
+The application is deployed on Render as a Spring Boot JAR service.
 
 ### Build Process
 - Maven builds the project
-- Docker packages the Spring Boot JAR
-- Render runs the container using:
+- Spring Boot packages into executable JAR
+- Render runs:
 ```
 java -jar happenings.jar
 ```

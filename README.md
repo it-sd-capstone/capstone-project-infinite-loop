@@ -1,27 +1,18 @@
 # Happenings – The Event Finder
 ## Overview
 Happenings is our capstone web application that helps users discover, create, and manage social events.
-Backend is built with Java Servlets and Maven, deployed on Apache Tomcat, and is connected to a MySQL database.
-Our Application supports event-related endpoints and database connectivity, with plans for user accounts and full event management features.
-
+The backend is built using Java with Spring Boot, Maven, MySQL, and it runs on an embedded server.
+It also provides REST-style endpoints that handle event-related features and data.
+We have successfully deployed our application publicly on Render.
 ---
 
-### Link to our Official site
-You can access the deployed version here:
-```
-https://capstone-project-infinite-loop-f0nr.onrender.com
-```
-Note:
-- Some features may still be in development
-- Backend test endpoints may not be publicly exposed
-
-### Installation Instructions
+### Installation Instructions (Local Development)
 Make sure the following are installed
-- Java JDK 17 or higher
-- Apache Maven
+- Java 21+
+- Maven 3.9+
 - Apache Tomcat 10+
-- MySQL Server (required for database functionality)
-- MySQL Workbench (used for database setup and importing the schema)
+- MySQL Server
+- Git
 ---
 
 ### Setup Steps
@@ -31,111 +22,87 @@ Make sure the following are installed
    cd capstone-project-infinite-loop
    ```
 
-2. Create the database
-    - Open MySQL Workbench and connect to your local MySQL server.
-    - Run:
+2. Configure Database (Optional for local testing)
+    - If using the database locally:
        ```
        CREATE DATABASE happenings;
        ```  
-    - Import schema:
-        - Go to Server → Data Import
-        - Select Import from Self-Contained File
-        - Choose the .sql file in the /db folder
-        - Select schema: happenings
-        - Click Start Import
+    - Import the database schema from the `/db` folder using MySQL Workbench:
+       - Go to Server → Data Import
+       - Select "Import from Self-Contained File"
+       - Choose the `.sql` file in `/db`
+       - Select the `happenings` schema
+       - Click Start Import
 
-   Expected result:
-    - Database is created
-
-3. Configure environment variables
-    - Set the following in your Tomcat configuration:
-        - MYSQLHOST
-        - MYSQLPORT
-        - MYSQLDATABASE
-        - MYSQLUSER
-        - MYSQLPASSWORD
-    - These must match your local or cloud MySQL setup.
-
-   Expected result:
-    - Application can connect to the database at runtime
+3. Environment Variables
+    - Set the following environment variables for database connection:
+      - MYSQLHOST – database host (e.g. localhost or cloud DB host)
+      - MYSQLPORT – database port (default: 3306)
+      - MYSQLDATABASE – database name (happenings)
+      - MYSQLUSER – database username
+      - MYSQLPASSWORD – database password
+      
+    - Where to set them:
+      - Locally: IDE run configuration or system environment variables
+      - On Render: Enviroment tab in the service dashboard
 
 4. Build the project
    ```
    mvn clean package
    ```
-   Expected result:
+   This will generate:
    ```
-   target/happenings.war is created
+   target/happenings.jar
    ```
 
-5. Deploy the WAR file to Tomcat
-    - Option A: Manual deployment
-        - Copy it into happenings.war
-        - Paste into Tomcat/webapps/
-        - Start Tomcat server
+5. Run the application locally
+   Option 1: Run with Maven
+   ```
+   mvn spring-boot:run
+   ```
+   
+   Option 2: run the JAR directly
+   ```
+   java -jar target/happenings.jar
+   ```
 
-    - Option B: IntelliJ deployment (recommended)
-        - Add artifact: happenings:war exploded
-        - Run Tomcat from IntelliJ
-        - Access:
-      ```
-      http://localhost:8080/happenings_war_exploded/test
-      ```
-   Note:
-    - The URL differs because IntelliJ deploys the app using the artifact name (happenings_war_exploded).
-
-6. Run the application
-    - After deploying and starting Tomcat, open one of the following URLs depending on your setup:
-    - If you used manual deployment (WAR file in /webapps):
+   Then open:
    ```
-   http://localhost:8080/happenings/test
+   http://localhost:8080/
    ```
-    - If you used IntelliJ deployment (war exploded):
-   ```
-   http://localhost:8080/happenings_war_exploded/test
-   ```
-   Expected result:
-    - Happenings backend is working!
-
-   Note:
-    - If you see a 404 error, double-check:
-        - the application name in your Tomcat deployment
-        - whether Tomcat is running
-        - which deployment option you used
 ---
 
 ## Testing
-This project currently uses manual endpoint testing.
-
-### Test 1: Backend Endpoint
-Steps:
-1. Start Tomcat server
-2. Open
-   Option A:
+### 1. Basic Server Test
+Open:
 ```
-http://localhost:8080/happenings/test
-```
-Option B:
-```
-http://localhost:8080/happenings_war_exploded/test
+http://localhost:8080/
 ```
 Expected result:
-- Happenings backend is working!
+```
+Happenings is running!
+```
 ---
 
-### Test 2: Database Connection
-Steps:
-1. Ensure MySQL server is running
-2. Confirm environment variables are set in Tomcat
-3. Open
-   Option A:
+### 2. Error Handling Test
+Open a non-existent route:
 ```
-http://localhost:8080/happenings/test
-```
-Option B:
-```
-http://localhost:8080/happenings_war_exploded/test
+http://localhost:8080/invalid-route
 ```
 Expected result:
-- Success → database connected
-- Error → configuration issue
+- HTTP 404 response
+
+### Render Deployment 
+The application is deployed using Docker on Render.
+
+### Build Process
+- Maven builds the project
+- Docker packages the Spring Boot JAR
+- Render runs the container using:
+```
+java -jar happenings.jar
+```
+Live URL
+```
+https://capstone-project-infinite-loop-f0nr.onrender.com/
+```

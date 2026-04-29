@@ -93,6 +93,15 @@ Expected result:
 - HTTP 404 response
 ---
 
+### 3. Events API Test
+Open:
+```
+http://localhost:8080/api/events
+```
+Expected result:
+- ["Music Festival","Art Fair","Food Truck Rally"]
+---
+
 ### Render Deployment 
 The application is deployed using Docker on Render.
 

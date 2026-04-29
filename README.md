@@ -1,8 +1,8 @@
 # Happenings – The Event Finder
 ## Overview
-Happenings is our capstone web application that helps users discover, create, and manage social events. 
-The backend is built using Java Spring Boot, Maven, MySQL, and it runs on an embedded server. 
-It also provides REST-style endpoints that handle event-related features and data. 
+Happenings is our capstone web application that helps users discover, create, and manage social events.
+The backend is built using Java Spring Boot, Maven, MySQL, and it runs on an embedded server.
+It also provides REST-style endpoints that handle event-related features and data.
 We have successfully deployed our application publicly on Render.
 
 ### Installation Instructions (Local Development)
@@ -23,26 +23,26 @@ Make sure the following are installed
    ```
 
 2. Configure Database (Optional for local testing)
-    - If using the database locally:
-       ```
-       CREATE DATABASE happenings;
-       ```  
-    - Import the database schema from the `/db` folder using MySQL Workbench:
-       - Go to Server → Data Import
-       - Select "Import from Self-Contained File"
-       - Choose the `.sql` file in `/db`
-       - Select the `happenings` schema
-       - Click Start Import
+   - If using the database locally:
+      ```
+      CREATE DATABASE happenings;
+      ```  
+   - Import the database schema from the `/db` folder using MySQL Workbench:
+      - Go to Server → Data Import
+      - Select "Import from Self-Contained File"
+      - Choose the `.sql` file in `/db`
+      - Select the `happenings` schema
+      - Click Start Import
 
 3. Environment Variables
-    - Set the following environment variables for database connection:
+   - Set the following environment variables for database connection:
       - MYSQLHOST – database host (e.g. localhost or cloud DB host)
       - MYSQLPORT – database port (default: 3306)
       - MYSQLDATABASE – database name (happenings)
       - MYSQLUSER – database username
       - MYSQLPASSWORD – database password
-      
-    - Where to set them:
+
+   - Where to set them:
       - Locally: IDE run configuration or system environment variables
       - On Render: Enviroment tab in the service dashboard
 
@@ -60,7 +60,7 @@ Make sure the following are installed
    ```
    mvn spring-boot:run
    ```
-   
+
    Option 2: run the JAR directly
    ```
    java -jar target/happenings.jar
@@ -102,7 +102,7 @@ Expected result:
 - JSON list of events
 ---
 
-### Render Deployment 
+### Render Deployment
 The application is deployed on Render as a Spring Boot JAR service.
 
 ### Build Process

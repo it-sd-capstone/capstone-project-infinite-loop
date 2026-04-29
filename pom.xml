@@ -34,14 +34,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Jakarta Servlet API (kept temporarily for compatibility during migration) -->
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- MySQL Connector -->
         <dependency>
             <groupId>com.mysql</groupId>

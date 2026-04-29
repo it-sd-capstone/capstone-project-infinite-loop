@@ -1,23 +1,9 @@
-<<<<<<< HEAD
-# capstone-project-infinite-loop
-
-A web application that allows users to discover, create, and manage social events.
-
-# Happenings – com.entity.Event Finder
-
-## Elevator Pitch
-
-Happenings is a full-stack web application that allows users to discover, create, and manage social events. Built using Java Servlets and deployed on Apache Tomcat, the project demonstrates backend web development concepts including routing, Maven-based builds, and database integration. It connects to a cloud-hosted MySQL database (Railway) using environment variables configured in the server. The system serves as a foundation for a larger event management platform that will include user accounts, event creation, and interactive social features.
-
-=======
 # Happenings – The Event Finder
 ## Overview
 Happenings is our capstone web application that helps users discover, create, and manage social events. 
 The backend is built using Java Spring Boot, Maven, MySQL, and it runs on an embedded server. 
 It also provides REST-style endpoints that handle event-related features and data. 
 We have successfully deployed our application publicly on Render.
->>>>>>> main
----
 
 ### Installation Instructions (Local Development)
 Make sure the following are installed

@@ -1,9 +1,14 @@
 package com.happenings.controller;
 
+
 import com.happenings.entity.Event;
 import com.happenings.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 
 import java.util.List;
 

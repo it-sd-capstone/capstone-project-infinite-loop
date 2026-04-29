@@ -2,7 +2,7 @@
 
 A web application that allows users to discover, create, and manage social events.
 
-# Happenings – Event Finder
+# Happenings – com.entity.Event Finder
 
 ## Elevator Pitch
 

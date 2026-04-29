@@ -1,8 +1,8 @@
 # Happenings – The Event Finder
 ## Overview
-Happenings is our capstone web application that helps users discover, create, and manage social events.
-The backend is built using Java with Spring Boot, Maven, MySQL, and it runs on an embedded server.
-It also provides REST-style endpoints that handle event-related features and data.
+Happenings is our capstone web application that helps users discover, create, and manage social events. 
+The backend is built using Java with Spring Boot, Maven, MySQL, and it runs on an embedded server. 
+It also provides REST-style endpoints that handle event-related features and data. 
 We have successfully deployed our application publicly on Render.
 ---
 
@@ -91,6 +91,7 @@ http://localhost:8080/invalid-route
 ```
 Expected result:
 - HTTP 404 response
+---
 
 ### Render Deployment 
 The application is deployed using Docker on Render.
@@ -103,6 +104,4 @@ The application is deployed using Docker on Render.
 java -jar happenings.jar
 ```
 Live URL
-```
 https://capstone-project-infinite-loop-f0nr.onrender.com/
-```

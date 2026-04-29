@@ -4,7 +4,6 @@ Happenings is our capstone web application that helps users discover, create, an
 The backend is built using Java Spring Boot, Maven, MySQL, and it runs on an embedded server.
 It also provides REST-style endpoints that handle event-related features and data.
 We have successfully deployed our application publicly on Render.
----
 
 ### Installation Instructions (Local Development)
 Make sure the following are installed

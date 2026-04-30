@@ -1,5 +1,6 @@
 package com.happenings.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -28,11 +29,13 @@ public class Event {
   @Column(name = "category_id")
   private Integer categoryId;
 
-  // Optional relationships (safe for reads only)
+  // Prevent JSON serialization crash
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "location_id", insertable = false, updatable = false)
   private Location location;
 
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id", insertable = false, updatable = false)
   private Category category;

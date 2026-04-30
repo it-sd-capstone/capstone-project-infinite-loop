@@ -1,0 +1,160 @@
+/* My Events & Saved Pages */
+.myevents-section {
+    padding: 24px 40px;
+}
+
+.page-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.page-header-row .create-btn {
+    background: #06b6d4;
+    color: #060f13 !important;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s, transform 0.15s;
+}
+
+.page-header-row .create-btn:hover {
+    background-color: #0891b2 !important;
+    color: #060f13 !important;
+    transform: translateY(-1px);
+}
+
+/* Edit/Delete buttons on cards */
+.card-actions {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    border-top: 1px solid #333;
+}
+
+.card-action-btn {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    font-family: Arial, sans-serif;
+}
+
+.edit-btn   { color: #06b6d4; }
+.edit-btn:hover   { background: #06b6d4; color: #060f13; border-color: #06b6d4; }
+
+.delete-btn { color: #f43f5e; }
+.delete-btn:hover { background: #f43f5e; color: #fff; border-color: #f43f5e; }
+
+@media (max-width: 480px) {
+    .myevents-section { padding: 16px; }
+}
+
+
+/* Create Event Page*/
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #e0e0e0;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: #1a1a1a;
+    border: 1.5px solid #333;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #e0e0e0;
+    font-family: Arial, sans-serif;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #06b6d4;
+    background: #0a1f24;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #557080;
+}
+
+.form-group select option {
+    background: #1a1a1a;
+    color: #e0e0e0;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-group input[type="file"] {
+    cursor: pointer;
+    color: #80b8c8;
+}
+
+#createMessage {
+    font-size: 13px;
+    text-align: center;
+    min-height: 18px;
+    color: #f43f5e;
+    margin: 0 0 12px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.cancel-btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: transparent;
+    color: #80b8c8;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.cancel-btn:hover {
+    border-color: #f43f5e;
+    color: #f43f5e !important;
+    background: transparent !important;
+    transform: none;
+}
+

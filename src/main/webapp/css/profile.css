@@ -1,0 +1,112 @@
+/* Profile Container */
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 80px);
+    padding: 40px 24px;
+}
+
+.profile-container {
+    width: 100%;
+    max-width: 480px;
+}
+
+/* Profile Card */
+.profile-card {
+    background: #242424;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 36px;
+}
+
+.profile-card h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #06b6d4;
+    margin-bottom: 8px;
+}
+
+.profile-subtitle {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+/* Categories */
+.profile-categories p {
+    font-size: 14px;
+    color: #e0e0e0;
+    margin-bottom: 10px;
+}
+
+.profile-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.profile-categories label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #1a1a1a;
+    border: 1.5px solid #333;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #e0e0e0;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-categories label:hover {
+    background: #0a1f24;
+    border-color: #06b6d4;
+}
+
+.profile-categories input[type="checkbox"] {
+    accent-color: #06b6d4;
+    width: 16px;
+    height: 16px;
+}
+
+/* Save Button */
+.profile-save-btn {
+    width: 100%;
+    padding: 13px;
+    background-color: #06b6d4;
+    color: #060f13;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.profile-save-btn:hover {
+    background-color: #0891b2;
+    transform: translateY(-1px);
+}
+
+/* Links */
+.profile-links {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #aaa;
+}
+
+.profile-links a {
+    color: #06b6d4;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.profile-links a:hover {
+    color: #f43f5e;
+}
+

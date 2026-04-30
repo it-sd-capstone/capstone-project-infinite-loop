@@ -23,10 +23,9 @@ public class SavedEventController {
     return savedEventService.save(savedEvent);
   }
 
-  // Remove a saved event using BOTH userId and eventId
-  @DeleteMapping("/{userId}/{eventId}")
-  public void remove(@PathVariable Integer userId, @PathVariable Integer eventId) {
-    savedEventService.remove(userId, eventId);
+  @DeleteMapping("/{id}")
+  public void remove(@PathVariable Integer id) {
+    savedEventService.deleteById(id);
   }
 
   // Get all saved events for a specific user

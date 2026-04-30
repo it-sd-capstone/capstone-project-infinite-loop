@@ -5,23 +5,19 @@ import lombok.Data;
 
 @Data
 @Entity
-@IdClass(SavedEventId.class)
 @Table(name = "saved_event")
 public class SavedEvent {
 
   @Id
-  @Column(name = "event_id")
-  private Integer eventId;
-
-  @Id
-  @Column(name = "user_id")
-  private Integer userId;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "saved_event_id")
+  private Integer savedEventId;
 
   @ManyToOne
-  @JoinColumn(name = "event_id", insertable = false, updatable = false)
-  private Event event;
-
-  @ManyToOne
-  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+  @JoinColumn(name = "user_id")
   private User user;
+
+  @ManyToOne
+  @JoinColumn(name = "event_id")
+  private Event event;
 }

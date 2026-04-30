@@ -22,13 +22,8 @@ public class UserCategoryController {
     return userCategoryService.save(userCategory);
   }
 
-  @DeleteMapping("/{userId}/{categoryId}")
-  public void remove(@PathVariable Integer userId, @PathVariable Integer categoryId) {
-    userCategoryService.remove(userId, categoryId);
-  }
-
-  @GetMapping("/user/{userId}")
-  public List<UserCategory> getByUser(@PathVariable Integer userId) {
-    return userCategoryService.getByUserId(userId);
+  @DeleteMapping("/{id}")
+  public void remove(@PathVariable Integer id) {
+    userCategoryService.deleteById(id);
   }
 }

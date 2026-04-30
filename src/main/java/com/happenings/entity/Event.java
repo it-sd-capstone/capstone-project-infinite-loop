@@ -16,6 +16,7 @@ public class Event {
   private Integer eventId;
 
   private String title;
+
   private String description;
 
   @Column(name = "event_datetime")
@@ -27,11 +28,12 @@ public class Event {
   @Column(name = "category_id")
   private Integer categoryId;
 
-  @ManyToOne
+  // Optional relationships (safe for reads only)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "location_id", insertable = false, updatable = false)
   private Location location;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id", insertable = false, updatable = false)
   private Category category;
 }

@@ -5,7 +5,7 @@ The backend is built using Java Spring Boot, Maven, MySQL, and it runs on an emb
 It also provides REST-style endpoints that handle event-related features and data.
 
 We have successfully deployed our application publicly on Render.
-Live URL
+
 https://capstone-project-infinite-loop-f0nr.onrender.com/
 
 ### Installation Instructions (Local Development)

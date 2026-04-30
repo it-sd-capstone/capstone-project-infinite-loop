@@ -1,7 +1,6 @@
 package com.happenings.services;
 
 import com.happenings.entity.SavedEvent;
-import com.happenings.entity.SavedEventId;
 import com.happenings.repository.SavedEventRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +19,20 @@ public class SavedEventService {
     return repo.save(savedEvent);
   }
 
-  public void remove(Integer userId, Integer eventId) {
-    SavedEventId id = new SavedEventId();
-    id.setUserId(userId);
-    id.setEventId(eventId);
-
+  public void deleteById(Integer id) {
     repo.deleteById(id);
   }
 
   public List<SavedEvent> getByUserId(Integer userId) {
     return repo.findByUserId(userId);
+  }
+
+  public List<SavedEvent> getAll() {
+    return repo.findAll();
+  }
+
+
+  public void remove(Integer id) {
+    repo.deleteById(id);
   }
 }

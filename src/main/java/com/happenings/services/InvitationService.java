@@ -1,31 +1,23 @@
 package com.happenings.services;
 
-
-import com.happenings.entity.Invitation;
-import com.happenings.entity.User;
-import com.happenings.repository.InvitationRepository;
+import com.happenings.services.EmailService;
+import com.happenings.dto.InviteRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 @Service
 public class InvitationService {
 
-  private final InvitationRepository repo;
+    private final EmailService emailService;
 
-  public InvitationService(InvitationRepository repo) {
-    this.repo = repo;
-  }
+    public InvitationService(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
-  public Invitation send(Invitation invitation) {
-    return repo.save(invitation);
-  }
+    public void sendInvite(InviteRequest request) {
 
-  public List<Invitation> getReceived(User user) {
-    return repo.findByReceiver(user);
-  }
-
-  public List<Invitation> getSent(User user) {
-    return repo.findBySender(user);
-  }
+        emailService.sendInviteEmail(
+                request.getEmail(),
+                "Event ID: " + request.getEventId()
+        );
+        
+    }
 }

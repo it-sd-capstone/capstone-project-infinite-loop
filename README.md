@@ -64,15 +64,18 @@ Make sure the following are installed
    ```
 
    Then open:
+   ```
    http://localhost:8080/
-   
+   ```
 ---
 
 ## Testing
 Right now we are doing manual testing, and we will add automated testing later.
 ### 1. Basic Server Test
 Open:
-http://localhost:8080/
+   ```
+   http://localhost:8080/
+   ```
 
 Or on Render:
 https://capstone-project-infinite-loop-f0nr.onrender.com/
@@ -84,7 +87,9 @@ Expected result:
 
 ### 2. Database Connection Test
 Open:
+```
 http://localhost:8080/db-test
+```
 
 Or on Render:
 https://capstone-project-infinite-loop-f0nr.onrender.com/db-test
@@ -103,7 +108,9 @@ This endpoint confirms that:
 
 ### 3. Events API Test
 Open:
+```
 http://localhost:8080/api/events
+```
 
 Or on Render:
 https://capstone-project-infinite-loop-f0nr.onrender.com/api/events

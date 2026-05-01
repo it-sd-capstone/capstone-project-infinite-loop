@@ -2,6 +2,7 @@ package com.happenings.controller;
 
 import com.happenings.entity.User;
 import com.happenings.services.UserService;
+import com.happenings.security.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,14 +15,27 @@ import java.util.Optional;
 public class AuthController {
 
   private final UserService userService;
+  private final JwtUtil jwtUtil;
 
-  public AuthController(UserService userService) {
+  public AuthController(UserService userService, JwtUtil jwtUtil) {
     this.userService = userService;
+    this.jwtUtil = jwtUtil;
   }
 
-  // -------------------------
-  // LOGIN
-  // -------------------------
+  // REGISTER
+  @PostMapping("/register")
+  public ResponseEntity<?> register(@RequestBody User user) {
+
+    if (user.getEmail() == null || user.getPassword() == null) {
+      return ResponseEntity.badRequest()
+              .body("Email and password required");
+    }
+
+    User createdUser = userService.register(user);
+    return ResponseEntity.ok(createdUser);
+  }
+
+  // LOGIN (JWT)
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
 
@@ -35,26 +49,21 @@ public class AuthController {
 
     Optional<User> user = userService.login(email, password);
 
-    if (user.isPresent()) {
-      return ResponseEntity.ok(user.get());
-    } else {
-      return ResponseEntity.status(401)
-              .body("Invalid credentials");
+    if (user.isEmpty()) {
+      return ResponseEntity.status(401).body("Invalid credentials");
     }
+
+    String token = jwtUtil.generateToken(email);
+
+    return ResponseEntity.ok(Map.of(
+            "token", token,
+            "user", user.get()
+    ));
   }
 
-  // -------------------------
-  // REGISTER
-  // -------------------------
-  @PostMapping("/register")
-  public ResponseEntity<?> register(@RequestBody User user) {
-
-    if (user.getEmail() == null || user.getPassword() == null) {
-      return ResponseEntity.badRequest()
-              .body("Email and password required");
-    }
-
-    User createdUser = userService.register(user);
-    return ResponseEntity.ok(createdUser);
+  // LOGOUT (stateless)
+  @PostMapping("/logout")
+  public ResponseEntity<?> logout() {
+    return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
   }
 }

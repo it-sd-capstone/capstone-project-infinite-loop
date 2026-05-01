@@ -2,6 +2,7 @@ package com.happenings.controller;
 
 import com.happenings.entity.User;
 import com.happenings.services.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class AuthController {
 
   private final UserService userService;
@@ -18,18 +19,42 @@ public class AuthController {
     this.userService = userService;
   }
 
+  // -------------------------
+  // LOGIN
+  // -------------------------
   @PostMapping("/login")
-  public Object login(@RequestBody Map<String, String> body) {
+  public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
+
     String email = body.get("email");
     String password = body.get("password");
 
+    if (email == null || password == null) {
+      return ResponseEntity.badRequest()
+              .body("Email and password are required");
+    }
+
     Optional<User> user = userService.login(email, password);
 
-    return user.orElse(null);
+    if (user.isPresent()) {
+      return ResponseEntity.ok(user.get());
+    } else {
+      return ResponseEntity.status(401)
+              .body("Invalid credentials");
+    }
   }
 
+  // -------------------------
+  // REGISTER
+  // -------------------------
   @PostMapping("/register")
-  public User register(@RequestBody User user) {
-    return userService.register(user);
+  public ResponseEntity<?> register(@RequestBody User user) {
+
+    if (user.getEmail() == null || user.getPassword() == null) {
+      return ResponseEntity.badRequest()
+              .body("Email and password required");
+    }
+
+    User createdUser = userService.register(user);
+    return ResponseEntity.ok(createdUser);
   }
 }

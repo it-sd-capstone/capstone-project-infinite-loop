@@ -15,24 +15,27 @@ public class SavedEventService {
     this.repo = repo;
   }
 
+  // SAVE EVENT
   public SavedEvent save(SavedEvent savedEvent) {
     return repo.save(savedEvent);
   }
 
-  public void deleteById(Integer id) {
-    repo.deleteById(id);
+  // DELETE EVENT (FIXED → returns boolean)
+  public boolean deleteById(Integer id) {
+    if (repo.existsById(id)) {
+      repo.deleteById(id);
+      return true;
+    }
+    return false;
   }
 
+  // GET BY USER
   public List<SavedEvent> getByUserId(Integer userId) {
     return repo.findByUserId(userId);
   }
 
+  // GET ALL
   public List<SavedEvent> getAll() {
     return repo.findAll();
-  }
-
-
-  public void remove(Integer id) {
-    repo.deleteById(id);
   }
 }

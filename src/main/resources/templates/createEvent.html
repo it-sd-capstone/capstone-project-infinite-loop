@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Create Event - Happenings</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/css/profile.css" />
+    <link rel="stylesheet" type="text/css" href="/css/myEvents.css" />
+</head>
+
+<body>
+
+<header>
+    <h1>Happenings</h1>
+    <nav>
+        <a href="/dashboard">Home</a>
+        <a href="/allEvents">All Events</a>
+        <a href="/saved">Saved</a>
+        <a href="/myEvents">My Events</a>
+        <a href="/profile">
+            <img src="/images/profileEmpty.png" class="profile-pic" />
+        </a>
+    </nav>
+</header>
+
+<main>
+    <div class="profile-container">
+        <div class="profile-card">
+
+            <h2>Create Event</h2>
+            <p class="profile-subtitle">Fill in the details below to post your event.</p>
+
+            <form id="createEventForm">
+
+                <div class="form-group">
+                    <label for="eventTitle">Event Name</label>
+                    <input type="text" id="eventTitle" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="eventCategory">Category</label>
+                    <select id="eventCategory" required>
+                        <option value="" disabled selected>Select a category</option>
+                        <option value="1">Music</option>
+                        <option value="2">Sports</option>
+                        <option value="4">Food & Drink</option>
+                        <option value="5">Outdoor</option>
+                        <option value="3">Technology</option>
+                        <option value="6">Community</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventDate">Date</label>
+                        <input type="date" id="eventDate" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventTime">Time</label>
+                        <input type="time" id="eventTime" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventLocation">Location</label>
+                    <input type="text" id="eventLocation" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="eventDescription">Description</label>
+                    <textarea id="eventDescription" rows="4"></textarea>
+                </div>
+
+                <p id="createMessage"></p>
+
+                <div class="form-actions">
+                    <a href="/myEvents" class="cancel-btn">Cancel</a>
+                    <button type="submit" class="profile-save-btn">Create Event</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</main>
+
+<script>
+    const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/events";
+
+    document.getElementById("createEventForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const title = document.getElementById("eventTitle").value;
+        const categoryId = document.getElementById("eventCategory").value;
+        const date = document.getElementById("eventDate").value;
+        const time = document.getElementById("eventTime").value;
+        const location = document.getElementById("eventLocation").value;
+        const description = document.getElementById("eventDescription").value;
+
+        const eventDatetime = new Date(date + "T" + time).toISOString();
+
+        const eventData = {
+            title: title,
+            description: description,
+            eventDatetime: eventDatetime,
+            locationId: 1,
+            categoryId: parseInt(categoryId)
+        };
+
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(eventData)
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to create event");
+            }
+
+            document.getElementById("createMessage").innerText =
+                "Event created successfully!";
+
+            setTimeout(() => {
+                window.location.href = "allEvents.html";
+            }, 1000);
+
+        } catch (error) {
+            console.error(error);
+            document.getElementById("createMessage").innerText =
+                "Error creating event.";
+        }
+    });
+</script>
+
+</body>
+</html>

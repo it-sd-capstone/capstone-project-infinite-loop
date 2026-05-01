@@ -2,13 +2,14 @@ package com.happenings.controller;
 
 import com.happenings.entity.Category;
 import com.happenings.services.CategoryService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class CategoryController {
 
   private final CategoryService categoryService;
@@ -17,8 +18,12 @@ public class CategoryController {
     this.categoryService = categoryService;
   }
 
+  // -------------------------
+  // GET ALL CATEGORIES
+  // -------------------------
   @GetMapping
-  public List<Category> getAll() {
-    return categoryService.getAll();
+  public ResponseEntity<List<Category>> getAll() {
+    List<Category> categories = categoryService.getAll();
+    return ResponseEntity.ok(categories);
   }
 }

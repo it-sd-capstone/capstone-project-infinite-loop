@@ -28,7 +28,7 @@ public class EventService {
     return eventRepository.save(event);
   }
 
-  // UPDATE EVENT (FIXED VERSION)
+  // UPDATE EVENT
   public Event updateEvent(int id, Event updatedEvent) {
     Event existing = eventRepository.findById(id).orElse(null);
 
@@ -40,15 +40,18 @@ public class EventService {
     existing.setDescription(updatedEvent.getDescription());
     existing.setEventDatetime(updatedEvent.getEventDatetime());
 
-    // IMPORTANT: use FK IDs (not objects)
     existing.setLocationId(updatedEvent.getLocationId());
     existing.setCategoryId(updatedEvent.getCategoryId());
 
     return eventRepository.save(existing);
   }
 
-  // DELETE EVENT
-  public void deleteEvent(int id) {
-    eventRepository.deleteById(id);
+  // DELETE EVENT (FIXED ✔ returns boolean now)
+  public boolean deleteEvent(int id) {
+    if (eventRepository.existsById(id)) {
+      eventRepository.deleteById(id);
+      return true;
+    }
+    return false;
   }
 }

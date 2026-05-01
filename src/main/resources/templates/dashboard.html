@@ -68,7 +68,7 @@
                 description: e.description,
                 category: mapCategory(e.categoryId),
                 categoryLabel: mapCategoryLabel(e.categoryId),
-                image: "images/login-bg.jpg",
+                image: mapCategoryImage(e.categoryId),
                 date: new Date(e.eventDatetime).toDateString(),
                 location: "Location TBD"
             }));
@@ -110,6 +110,17 @@
             case 4: return "Food & Drink";
             case 5: return "Community";
             default: return "Community";
+        }
+    }
+
+    function mapCategoryImage(id) {
+        switch (id) {
+            case 1: return "/images/musicCard.png";
+            case 2: return "/images/sportsCard.jpg";
+            case 3: return "/images/TechnologyCard.png";
+            case 4: return "/images/FoodDrinkCard.jpg";
+            case 5: return "/images/CommunityCard.png";
+            default: return "/images/login-bg.jpg";
         }
     }
 

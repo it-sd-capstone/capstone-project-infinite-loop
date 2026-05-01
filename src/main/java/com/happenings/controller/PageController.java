@@ -85,4 +85,10 @@ public class PageController {
     public String logout() {
         return "redirect:/login";
     }
+
+    // -------------------------
+    // FORGOT PASSWORD
+    // -------------------------
+    @GetMapping("/forgotPassword")
+    public String forgotPassword() {return "forgotPassword";}
 }

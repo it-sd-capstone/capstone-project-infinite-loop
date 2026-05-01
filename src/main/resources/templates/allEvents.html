@@ -17,6 +17,7 @@
     <nav>
         <a href="/dashboard">Home</a>
         <a href="/allEvents" class="active">All Events</a>
+        <a href="/recommendations">Recommended</a>
         <a href="/saved">Saved</a>
         <a href="/myEvents">My Events</a>
         <a href="/profile">
@@ -243,26 +244,20 @@
             const card = document.createElement('div');
             card.className = 'card';
 
-            card.innerHTML = `
-                <div class="card-header">
-                    <a class="event-name">${event.title}</a>
-                    <p class="event-type">
-                        <span class="badge ${event.category}">
-                            ${event.categoryLabel}
-                        </span>
-                    </p>
-                </div>
-
-                <div class="image-container">
-                    <img src="${event.image}" alt="${event.title}">
-                </div>
-
-                <div class="card-details">
-                    <p class="desc">${event.description}</p>
-                    <p>📅 ${event.date}</p>
-                    <p>📍 ${event.location}</p>
-                </div>
-            `;
+            card.innerHTML =
+                '<div class="card-header">' +
+                '<a class="event-name">' + event.title + '</a>' +
+                '<p class="event-type"><span class="badge ' + event.category + '">' + event.categoryLabel + '</span></p>' +
+                '</div>' +
+                '<div class="image-container">' +
+                '<img src="' + event.image + '">' +
+                '<button class="card-save-btn" onclick="toggleSave(this)">🤍</button>' +
+                '</div>' +
+                '<div class="card-details">' +
+                '<p class="desc">' + event.description + '</p>' +
+                '<p>📅 ' + event.date + '</p>' +
+                '<p>📍 ' + event.location + '</p>' +
+                '</div>';
 
             grid.appendChild(card);
         });
@@ -285,6 +280,10 @@
 
             pagination.appendChild(btn);
         }
+    }
+
+    function toggleSave(btn) {
+        btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
     }
 
     // =========================

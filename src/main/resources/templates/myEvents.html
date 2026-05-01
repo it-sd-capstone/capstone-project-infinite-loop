@@ -17,6 +17,7 @@
     <nav>
         <a href="/dashboard">Home</a>
         <a href="/allEvents">All Events</a>
+        <a href="/recommendations">Recommended</a>
         <a href="/saved">Saved</a>
         <a href="/myEvents" class="active">My Events</a>
         <a href="/profile">
@@ -66,6 +67,39 @@
         }
     }
 
+    function mapCategory(id) {
+        switch (id) {
+            case 1: return "music";
+            case 2: return "sports";
+            case 3: return "technology";
+            case 4: return "food";
+            case 5: return "community";
+            default: return "community";
+        }
+    }
+
+    function mapCategoryLabel(id) {
+        switch (id) {
+            case 1: return "Music & Art";
+            case 2: return "Sports";
+            case 3: return "Technology";
+            case 4: return "Food & Drink";
+            case 5: return "Community";
+            default: return "Community";
+        }
+    }
+
+    function mapCategoryImage(id) {
+        switch (id) {
+            case 1: return "/images/musicCard.png";
+            case 2: return "/images/sportsCard.jpg";
+            case 3: return "/images/TechnologyCard.png";
+            case 4: return "/images/FoodDrinkCard.jpg";
+            case 5: return "/images/CommunityCard.png";
+            default: return "/images/login-bg.jpg";
+        }
+    }
+
     function renderMyEvents(events) {
         const grid = document.getElementById('myEventsGrid');
         grid.innerHTML = '';
@@ -81,23 +115,17 @@
 
             card.innerHTML =
                 '<div class="card-header">' +
-                '<a class="event-name">' + event.title + '</a>' +
-                '<p class="event-type">' +
-                '<span class="badge">' + (event.category || "Event") + '</span>' +
-                '</p>' +
+                '<a class="event-name">' + (event.title || 'Untitled') + '</a>' +
+                '<p class="event-type"><span class="badge ' + mapCategory(event.categoryId) + '">' + mapCategoryLabel(event.categoryId) + '</span></p>' +
                 '</div>' +
-
                 '<div class="image-container">' +
-                '<img src="' + (event.image || "images/login-bg.jpg") + '" ' +
-                'alt="' + event.title + '">' +
+                '<img src="' + mapCategoryImage(event.categoryId) + '">' +
                 '</div>' +
-
                 '<div class="card-details">' +
-                '<p class="desc">' + (event.description || "") + '</p>' +
-                '<p>📅 ' + (event.date || "") + '</p>' +
-                '<p>📍 ' + (event.location || "") + '</p>' +
+                '<p class="desc">' + (event.description || '') + '</p>' +
+                '<p>📅 ' + new Date(event.eventDatetime).toDateString() + '</p>' +
+                '<p>📍 ' + (event.location || 'TBD') + '</p>' +
                 '</div>' +
-
                 '<div class="card-actions">' +
                 '<button class="card-action-btn edit-btn">Edit</button>' +
                 '<button class="card-action-btn delete-btn">Delete</button>' +

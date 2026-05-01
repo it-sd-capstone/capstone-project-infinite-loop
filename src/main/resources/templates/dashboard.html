@@ -16,6 +16,7 @@
     <nav>
         <a href="/dashboard" class="active">Home</a>
         <a href="/allEvents">All Events</a>
+        <a href="/recommendations">Recommended</a>
         <a href="/saved">Saved</a>
         <a href="/myEvents">My Events</a>
         <a href="/profile">
@@ -141,6 +142,7 @@
                 '</div>' +
                 '<div class="image-container">' +
                 '<img src="' + event.image + '">' +
+                '<button class="card-save-btn" onclick="toggleSave(this)">🤍</button>' +
                 '</div>' +
                 '<div class="card-details">' +
                 '<p class="desc">' + event.description + '</p>' +
@@ -150,6 +152,10 @@
 
             container.appendChild(card);
         });
+    }
+
+    function toggleSave(btn) {
+        btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
     }
 
     // ----------------------------

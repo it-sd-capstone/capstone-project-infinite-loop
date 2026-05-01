@@ -91,4 +91,8 @@ public class PageController {
     // -------------------------
     @GetMapping("/forgotPassword")
     public String forgotPassword() {return "forgotPassword";}
+
+    @GetMapping("/recommendations")
+    public String recommendations() {return "recommendations";
+    }
 }

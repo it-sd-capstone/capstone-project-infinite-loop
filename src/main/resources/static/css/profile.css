@@ -2,8 +2,7 @@
 main {
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 80px);
+    align-items: flex-start;
     padding: 40px 24px;
 }
 
@@ -110,3 +109,28 @@ main {
     color: #f43f5e;
 }
 
+/*Log out box*/
+.logout-box {
+    margin-top: 16px;
+    padding: 0;
+}
+
+.logout-box a {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    background-color: #f43f5e;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    border-radius: 8px;
+    box-sizing: border-box;
+    text-align: center;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.logout-box a:hover {
+    background-color: #e11d48;
+    transform: translateY(-1px);
+}

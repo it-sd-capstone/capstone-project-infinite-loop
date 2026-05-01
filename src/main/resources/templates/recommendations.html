@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Recommendations - Happenings</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/css/cards.css" />
+</head>
+
+<body>
+
+<header>
+    <h1>Happenings</h1>
+    <nav>
+        <a href="/dashboard">Home</a>
+        <a href="/allEvents">All Events</a>
+        <a href="/recommendations" class="active">Recommended</a>
+        <a href="/saved">Saved</a>
+        <a href="/myEvents">My Events</a>
+        <a href="/profile">
+            <img src="/images/profileEmpty.png" class="profile-pic" />
+        </a>
+    </nav>
+</header>
+
+<main>
+
+    <div class="home-banner">
+        <h2>Recommended for You</h2>
+        <p>Events picked based on your interest categories.</p>
+    </div>
+
+    <div class="rec-tags" id="recTags"></div>
+
+    <div class="section">
+        <div class="allevents-grid" id="recGrid"></div>
+    </div>
+
+</main>
+
+<script>
+    const API_URL = 'https://capstone-project-infinite-loop-f0nr.onrender.com/api/events';
+
+    function mapCategory(id) {
+        switch (id) {
+            case 1: return "music";
+            case 2: return "sports";
+            case 3: return "technology";
+            case 4: return "food";
+            case 5: return "community";
+            default: return "community";
+        }
+    }
+
+    function mapCategoryLabel(id) {
+        switch (id) {
+            case 1: return "Music & Art";
+            case 2: return "Sports";
+            case 3: return "Technology";
+            case 4: return "Food & Drink";
+            case 5: return "Community";
+            default: return "Community";
+        }
+    }
+
+    function mapCategoryImage(id) {
+        switch (id) {
+            case 1: return "/images/musicCard.png";
+            case 2: return "/images/sportsCard.jpg";
+            case 3: return "/images/TechnologyCard.png";
+            case 4: return "/images/FoodDrinkCard.jpg";
+            case 5: return "/images/CommunityCard.png";
+            default: return "/images/login-bg.jpg";
+        }
+    }
+
+    function categoryNameToId(name) {
+        switch (name) {
+            case "music":      return 1;
+            case "sports":     return 2;
+            case "technology": return 3;
+            case "food":       return 4;
+            case "community":  return 5;
+            default:           return 5;
+        }
+    }
+
+    function getUserCategories() {
+        try {
+            const saved = localStorage.getItem('happenings_categories');
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    }
+
+    async function loadRecommendations() {
+        const grid = document.getElementById('recGrid');
+        const tagsContainer = document.getElementById('recTags');
+        const userCategories = getUserCategories();
+
+        if (userCategories.length > 0) {
+            tagsContainer.innerHTML = userCategories.map(cat => {
+                const label = mapCategoryLabel(categoryNameToId(cat));
+                return `<span class="badge ${cat} rec-tag">${label}</span>`;
+            }).join('');
+        } else {
+            tagsContainer.innerHTML = '<p style="color:#aaa;text-align:center;padding:0 40px">No categories selected. <a href="/profile" style="color:#06b6d4">Update your profile</a> to get recommendations.</p>';
+        }
+
+        try {
+            const response = await fetch(API_URL);
+
+            if (!response.ok) throw new Error('HTTP error ' + response.status);
+
+            const data = await response.json();
+
+            const filtered = data.filter(e => {
+                const cat = mapCategory(e.categoryId);
+                return userCategories.includes(cat);
+            });
+
+            renderEvents(filtered);
+
+        } catch (err) {
+            console.error(err);
+            grid.innerHTML = "<p style='color:#aaa'>Unable to load recommendations right now.</p>";
+        }
+    }
+
+    function renderEvents(events) {
+        const grid = document.getElementById('recGrid');
+        grid.innerHTML = '';
+
+        events.forEach(e => {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            card.innerHTML =
+                '<div class="card-header">' +
+                '<a class="event-name">' + (e.title || 'Untitled') + '</a>' +
+                '<p class="event-type"><span class="badge ' + mapCategory(e.categoryId) + '">' + mapCategoryLabel(e.categoryId) + '</span></p>' +
+                '</div>' +
+                '<div class="image-container">' +
+                '<img src="' + mapCategoryImage(e.categoryId) + '" alt="' + (e.title || '') + '">' +
+                '<button class="card-save-btn" onclick="toggleSave(this)">🤍</button>' +
+                '</div>' +
+                '<div class="card-details">' +
+                '<p class="desc">' + (e.description || '') + '</p>' +
+                '<p>📅 ' + new Date(e.eventDatetime).toDateString() + '</p>' +
+                '<p>📍 ' + (e.location || 'TBD') + '</p>' +
+                '</div>';
+
+            grid.appendChild(card);
+        });
+    }
+
+    function toggleSave(btn) {
+        btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
+    }
+
+    document.addEventListener('DOMContentLoaded', loadRecommendations);
+</script>
+
+</body>
+</html>

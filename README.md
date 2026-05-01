@@ -1,15 +1,15 @@
 # Happenings – The Event Finder
 ## Overview
-Happenings is our capstone web application that helps users discover, create, and manage social events.
-The backend is built using Java Spring Boot, Maven, MySQL, and it runs on an embedded Tomcat server.
-It also provides REST-style endpoints that handle event-related features and data.
+Happenings is our capstone web app that helps users discover, create, and manage social events.
+The backend is built with Java Spring Boot, Maven, MySQL, running on an embedded Tomcat server.
+The frontend uses HTML templates and static resources, fully connected to our REST APIs.
+All pages, forms, and dynamic data are now served through Spring controllers, making the app fully functional and compatible with Render deployment.
 
-We have successfully deployed our application publicly on Render.
-
+Check out the live app:
 https://capstone-project-infinite-loop-f0nr.onrender.com/
 
-### Installation Instructions (Local Development)
-Make sure the following are installed
+### Requirements (Local Development)
+Before running the app locally, make sure you have:
 - Java 21+
 - Maven 3.9+
 - MySQL
@@ -17,22 +17,21 @@ Make sure the following are installed
 
 ---
 
-### Setup Steps
+### Setup Instructions
 1. Clone the repository
    ```
    git clone https://github.com/it-sd-capstone/capstone-project-infinite-loop.git
    cd capstone-project-infinite-loop
    ```
 
-2. Configure Database (Optional for local testing)
-   - If using the database locally:
+2. Database Setup (Optional for local testing)
       ```
       CREATE DATABASE happenings;
       ```
-   - Note: The production database is hosted on Railway and is already configured in Render.
+   - The production database is hosted on Railway and is already configured in Render.
 
 3. Environment Variables
-   - Set the following environment variables for database connection:
+   - Set the following for database connection:
      - DB_HOST
      - DB_PORT
      - DB_NAME
@@ -47,18 +46,18 @@ Make sure the following are installed
    ```
    mvn clean package
    ```
-   This will generate:
+   This creates:
    ```
    target/happenings.jar
    ```
 
 5. Run the application locally
-   Option 1: Run with Maven
+   Option 1: With Maven
    ```
    mvn spring-boot:run
    ```
 
-   Option 2: run the JAR directly
+   Option 2: With the JAR
    ```
    java -jar target/happenings.jar
    ```
@@ -71,8 +70,8 @@ Make sure the following are installed
 
 ## Testing
 Right now we are doing manual testing, and we will add automated testing later.
-### 1. Basic Server Test
-Open:
+### 1. Server Test
+Open the app locally:
    ```
    http://localhost:8080/
    ```
@@ -81,33 +80,28 @@ Or on Render:
 https://capstone-project-infinite-loop-f0nr.onrender.com/
 
 Expected result:
-- Happenings is running!
+- The homepage loads, and navigation links work: Dashboard, All Events, My Events, Saved, Profile.
 
 ---
 
 ### 2. Database Connection Test
-Open:
+Open locally:
 ```
-http://localhost:8080/db-test
+http://localhost:8080/api/db-test
 ```
 
 Or on Render:
-https://capstone-project-infinite-loop-f0nr.onrender.com/db-test
+https://capstone-project-infinite-loop-f0nr.onrender.com/api/db-test
 
 Expected result:
 - Database connection successful!
 
-If the database is not connected, you will see:
-- Database connection FAILED: <error message>
+This confirms that Spring Boot is connected to MySQL, JDBC is working, and environment variables are correct.
 
-This endpoint confirms that:
-- Spring Boot is connected to MySQL
-- JDBC connection is working
-- Environment variables are correctly set on Render
 ---
 
 ### 3. Events API Test
-Open:
+Open locally:
 ```
 http://localhost:8080/api/events
 ```
@@ -116,7 +110,7 @@ Or on Render:
 https://capstone-project-infinite-loop-f0nr.onrender.com/api/events
 
 Expected result:
-- JSON list of events
+- Returns a JSON list of events from the database.
 ---
 
 ### Render Deployment

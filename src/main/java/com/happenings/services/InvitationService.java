@@ -12,12 +12,13 @@ public class InvitationService {
         this.emailService = emailService;
     }
 
-    public void sendInvite(InviteRequest request) {
+    public void sendInvitation(InviteRequest request) {
+
+        String message = "You’ve been invited to event ID: " + request.getEventId();
 
         emailService.sendInviteEmail(
                 request.getEmail(),
-                "Event ID: " + request.getEventId()
+                message
         );
-        
     }
 }

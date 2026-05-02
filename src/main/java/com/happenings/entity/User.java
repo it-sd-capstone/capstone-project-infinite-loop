@@ -1,14 +1,14 @@
 package com.happenings.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(
-  name = "user",
-  uniqueConstraints = {@UniqueConstraint(columnNames = "email")}
+        name = "users",
+        uniqueConstraints = {@UniqueConstraint(columnNames = "email")}
 )
-
 public class User {
 
   @Id
@@ -21,6 +21,8 @@ public class User {
   @Column(nullable = false, unique = true)
   private String email;
 
+  // 🔒 Hide password from JSON responses
+  @JsonIgnore
   @Column(nullable = false)
   private String password;
 
@@ -35,6 +37,11 @@ public class User {
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();
   }
+
+  // ======================
+  // GETTERS / SETTERS
+  // ======================
+
   public Integer getId() {
     return id;
   }
@@ -62,14 +69,20 @@ public class User {
   public String getPassword() {
     return password;
   }
+
   public void setPassword(String password) {
     this.password = password;
   }
 
-  public String getRole() {return role;}
+  public String getRole() {
+    return role;
+  }
 
-  public void setRole(String role) {this.role = role;}
+  public void setRole(String role) {
+    this.role = role;
+  }
 
-  public LocalDateTime getCreatedAt() {return createdAt;}
-
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
 }

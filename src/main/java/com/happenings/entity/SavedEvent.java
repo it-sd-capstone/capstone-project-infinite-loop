@@ -5,7 +5,12 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "saved_event")
+@Table(
+        name = "saved_event",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"user_id", "event_id"})
+        }
+)
 public class SavedEvent {
 
   @Id
@@ -14,10 +19,10 @@ public class SavedEvent {
   private Integer savedEventId;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
   @ManyToOne
-  @JoinColumn(name = "event_id")
+  @JoinColumn(name = "event_id", nullable = false)
   private Event event;
 }

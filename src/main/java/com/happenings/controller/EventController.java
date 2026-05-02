@@ -14,40 +14,30 @@ public class EventController {
 
   private final EventService eventService;
 
-  // -------------------------
-  // CONSTRUCTOR INJECTION
-  // -------------------------
   public EventController(EventService eventService) {
     this.eventService = eventService;
   }
 
-  // -------------------------
   // GET ALL EVENTS
-  // -------------------------
   @GetMapping
   public ResponseEntity<List<Event>> getAllEvents() {
-    List<Event> events = eventService.getAllEvents();
-    return ResponseEntity.ok(events);
+    return ResponseEntity.ok(eventService.getAllEvents());
   }
 
-  // -------------------------
   // GET EVENT BY ID
-  // -------------------------
   @GetMapping("/{id}")
-  public ResponseEntity<Event> getEventById(@PathVariable int id) {
+  public ResponseEntity<Event> getEventById(@PathVariable Integer id) {
 
     Event event = eventService.getEventById(id);
 
     if (event == null) {
-      return ResponseEntity.status(404).build();
+      return ResponseEntity.notFound().build();
     }
 
     return ResponseEntity.ok(event);
   }
 
-  // -------------------------
   // CREATE EVENT
-  // -------------------------
   @PostMapping
   public ResponseEntity<Event> createEvent(@RequestBody Event event) {
 
@@ -56,35 +46,30 @@ public class EventController {
     return ResponseEntity.ok(created);
   }
 
-  // -------------------------
   // UPDATE EVENT
-  // -------------------------
   @PutMapping("/{id}")
-  public ResponseEntity<Event> updateEvent(@PathVariable int id,
+  public ResponseEntity<Event> updateEvent(@PathVariable Integer id,
                                            @RequestBody Event event) {
 
     Event updated = eventService.updateEvent(id, event);
 
     if (updated == null) {
-      return ResponseEntity.status(404).build();
+      return ResponseEntity.notFound().build();
     }
 
     return ResponseEntity.ok(updated);
   }
 
-  // -------------------------
   // DELETE EVENT
-  // -------------------------
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> deleteEvent(@PathVariable int id) {
+  public ResponseEntity<Void> deleteEvent(@PathVariable Integer id) {
 
     boolean deleted = eventService.deleteEvent(id);
 
     if (!deleted) {
-      return ResponseEntity.status(404)
-              .body("Event not found");
+      return ResponseEntity.notFound().build();
     }
 
-    return ResponseEntity.ok("Event deleted successfully");
+    return ResponseEntity.ok().build();
   }
 }

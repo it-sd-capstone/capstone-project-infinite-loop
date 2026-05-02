@@ -5,8 +5,6 @@ import com.happenings.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
@@ -20,19 +18,7 @@ public class UserController {
 
   // GET USER BY ID
   @GetMapping("/{id}")
-  public ResponseEntity<?> getUser(@PathVariable Integer id) {
-    Optional<User> user = userService.findById(id);
-    return user.map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.notFound().build());
-  }
-
-  // UPDATE USER PROFILE
-  @PutMapping("/{id}")
-  public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody User updated) {
-    User result = userService.updateProfile(id, updated);
-    if (result == null) {
-      return ResponseEntity.notFound().build();
-    }
-    return ResponseEntity.ok(result);
+  public ResponseEntity<User> getById(@PathVariable Integer id) {
+    return ResponseEntity.ok(userService.getById(id));
   }
 }

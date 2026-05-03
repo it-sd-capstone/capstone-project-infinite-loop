@@ -10,8 +10,9 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-  private final String SECRET = "THIS_IS_A_SECRET_KEY_CHANGE_ME_1234567890";
-  private final long EXPIRATION = 1000 * 60 * 60 * 24; // 24 hours
+  // TODO: Replace with a secure key in production
+  private static final String SECRET = "THIS_IS_A_SECRET_KEY_CHANGE_ME_1234567890";
+  private static final long EXPIRATION = 1000 * 60 * 60 * 24; // 24 hours
 
   private Key getSigningKey() {
     return Keys.hmacShaKeyFor(SECRET.getBytes());
@@ -39,7 +40,7 @@ public class JwtUtil {
     try {
       extractEmail(token);
       return true;
-    } catch (Exception e) {
+    } catch (JwtException | IllegalArgumentException e) {
       return false;
     }
   }

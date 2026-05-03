@@ -31,6 +31,17 @@ public class JwtFilter implements Filter {
 
     String path = req.getRequestURI();
 
+    //QUICK BYPASS FOR TESTING
+    //TODO remove these before pushing to main
+    if (path.startsWith("/api/events")) {
+      chain.doFilter(request, response);
+      return;
+    }
+    if (path.startsWith("/api/saved")) {
+      chain.doFilter(request, response);
+      return;
+    }
+
     // =========================
     // ALLOW NON-API ROUTES
     // (frontend pages, static pages)

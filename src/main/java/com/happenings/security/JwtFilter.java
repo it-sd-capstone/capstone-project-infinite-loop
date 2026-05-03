@@ -1,18 +1,14 @@
 package com.happenings.security;
 
-import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
-public class JwtFilter implements Filter {
+public class JwtFilter extends OncePerRequestFilter {
 
   private final JwtUtil jwtUtil;
 
@@ -21,28 +17,17 @@ public class JwtFilter implements Filter {
   }
 
   @Override
-  public void doFilter(ServletRequest request,
-                       ServletResponse response,
-                       FilterChain chain)
-          throws IOException, ServletException {
+  protected boolean shouldNotFilter(HttpServletRequest request) {
+    String path = request.getRequestURI();
+    return path.startsWith("/api/auth/");
+  }
 
-    HttpServletRequest req = (HttpServletRequest) request;
-    HttpServletResponse res = (HttpServletResponse) response;
+  @Override
+  protected void doFilterInternal(HttpServletRequest req,
+                                  HttpServletResponse res,
+                                  FilterChain chain)
+          throws ServletException, IOException {
 
-    String path = req.getRequestURI();
-
-    // =========================
-    // ALLOW NON-API ROUTES
-    // (frontend pages, static pages)
-    // =========================
-    if (!path.startsWith("/api/")) {
-      chain.doFilter(request, response);
-      return;
-    }
-
-    // =========================
-    // CHECK AUTH HEADER
-    // =========================
     String authHeader = req.getHeader("Authorization");
 
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -52,14 +37,11 @@ public class JwtFilter implements Filter {
 
     String token = authHeader.substring(7);
 
-    // =========================
-    // VALIDATE TOKEN
-    // =========================
     if (!jwtUtil.validateToken(token)) {
       res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
       return;
     }
 
-    chain.doFilter(request, response);
+    chain.doFilter(req, res);
   }
 }

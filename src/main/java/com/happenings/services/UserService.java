@@ -30,4 +30,21 @@ public class UserService {
   public User register(User user) {
     return repo.save(user);
   }
+
+  // LOGIN USER
+  public User login(String email, String password) {
+    Optional<User> optionalUser = repo.findByEmail(email);
+
+    if (optionalUser.isEmpty()) {
+      return null;
+    }
+
+    User user = optionalUser.get();
+
+    if (!user.getPassword().equals(password)) {
+      return null;
+    }
+
+    return user;
+  }
 }

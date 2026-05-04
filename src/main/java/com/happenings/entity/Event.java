@@ -29,6 +29,10 @@ public class Event {
   @Column(name = "category_id")
   private Integer categoryId;
 
+  @Column(name = "created_by_user_id")
+  private Integer createdByUserId;
+
+
   // Prevent JSON serialization crash
   @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
@@ -39,4 +43,9 @@ public class Event {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id", insertable = false, updatable = false)
   private Category category;
+
+  @JsonIgnore
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "created_by_user_id", insertable = false, updatable = false)
+  private User createdBy;
 }

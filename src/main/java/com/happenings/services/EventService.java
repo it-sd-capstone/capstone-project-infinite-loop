@@ -64,4 +64,9 @@ public class EventService {
 
     return false;
   }
+
+  //Gets the events by the user that created them
+  public List<Event> getEventsByUser(Integer userId) {
+    return eventRepository.findByCreatedByUserId(userId);
+  }
 }

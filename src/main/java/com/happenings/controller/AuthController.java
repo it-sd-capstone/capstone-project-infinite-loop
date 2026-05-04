@@ -1,8 +1,12 @@
 package com.happenings.controller;
 
+import com.happenings.dto.LoginRequest;
+import com.happenings.dto.RegisterRequest;
+import com.happenings.dto.UserResponse;
 import com.happenings.entity.User;
-import com.happenings.services.UserService;
+import com.happenings.mapper.UserMapper;
 import com.happenings.security.JwtUtil;
+import com.happenings.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,35 +25,38 @@ public class AuthController {
     this.jwtUtil = jwtUtil;
   }
 
-  // ============================
   // REGISTER
-  // ============================
   @PostMapping("/register")
-  public ResponseEntity<?> register(@RequestBody User user) {
+  public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
+
+    User user = new User();
+    user.setUsername(req.getUsername());
+    user.setEmail(req.getEmail());
+    user.setPassword(req.getPassword());
+    user.setName(req.getName());
+
     User created = userService.register(user);
-    return ResponseEntity.ok(created);
+    UserResponse dto = UserMapper.toResponse(created);
+
+    return ResponseEntity.ok(dto);
   }
 
-  // ============================
   // LOGIN
-  // ============================
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
+  public ResponseEntity<?> login(@RequestBody LoginRequest req) {
 
-    String email = body.get("email");
-    String password = body.get("password");
-
-    User user = userService.login(email, password);
+    User user = userService.login(req.getEmail(), req.getPassword());
 
     if (user == null) {
       return ResponseEntity.status(401).body("Invalid credentials");
     }
 
-    String token = jwtUtil.generateToken(email);
+    String token = jwtUtil.generateToken(req.getEmail());
+    UserResponse dto = UserMapper.toResponse(user);
 
     return ResponseEntity.ok(Map.of(
             "token", token,
-            "user", user
+            "user", dto
     ));
   }
 }

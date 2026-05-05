@@ -41,13 +41,44 @@
 <script>
     const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/events/saved";
 
+    function mapCategory(id) {
+        switch (id) {
+            case 1: return "music";
+            case 2: return "sports";
+            case 3: return "technology";
+            case 4: return "food";
+            case 5: return "community";
+            default: return "community";
+        }
+    }
+
+    function mapCategoryLabel(id) {
+        switch (id) {
+            case 1: return "Music & Art";
+            case 2: return "Sports";
+            case 3: return "Technology";
+            case 4: return "Food & Drink";
+            case 5: return "Community";
+            default: return "Community";
+        }
+    }
+
+    function mapCategoryImage(id) {
+        switch (id) {
+            case 1: return "/images/musicCard.png";
+            case 2: return "/images/sportsCard.jpg";
+            case 3: return "/images/TechnologyCard.png";
+            case 4: return "/images/FoodDrinkCard.jpg";
+            case 5: return "/images/CommunityCard.png";
+            default: return "/images/login-bg.jpg";
+        }
+    }
+
     async function loadSavedEvents() {
         try {
             const res = await fetch(API_URL);
 
-            if (!res.ok) {
-                throw new Error("Failed to load saved events");
-            }
+            if (!res.ok) throw new Error("Failed to load saved events");
 
             const data = await res.json();
 
@@ -55,7 +86,6 @@
 
         } catch (err) {
             console.error(err);
-
             document.getElementById('savedGrid').innerHTML =
                 "<p style='color:white'>Unable to load saved events.</p>";
         }
@@ -74,19 +104,34 @@
             const card = document.createElement('div');
             card.className = 'card';
 
+            const eventData = {
+                title:         event.title || 'Untitled',
+                description:   event.description || '',
+                category:      event.category || mapCategory(event.categoryId),
+                categoryLabel: event.categoryLabel || mapCategoryLabel(event.categoryId),
+                image:         event.image || mapCategoryImage(event.categoryId),
+                date:          event.date || new Date(event.eventDatetime).toDateString(),
+                location:      event.location || 'TBD'
+            };
+
+            card.addEventListener('click', function(e) {
+                if (e.target.classList.contains('card-save-btn')) return;
+                Modal.open(eventData);
+            });
+
             card.innerHTML =
                 '<div class="card-header">' +
-                '<a class="event-name">' + event.title + '</a>' +
-                '<p class="event-type"><span class="badge ' + event.category + '">' + event.categoryLabel + '</span></p>' +
+                '<a class="event-name">' + eventData.title + '</a>' +
+                '<p class="event-type"><span class="badge ' + eventData.category + '">' + eventData.categoryLabel + '</span></p>' +
                 '</div>' +
                 '<div class="image-container">' +
-                '<img src="' + event.image + '">' +
+                '<img src="' + eventData.image + '">' +
                 '<button class="card-save-btn" onclick="toggleSave(this)">❤️</button>' +
                 '</div>' +
                 '<div class="card-details">' +
-                '<p class="desc">' + event.description + '</p>' +
-                '<p>📅 ' + event.date + '</p>' +
-                '<p>📍 ' + event.location + '</p>' +
+                '<p class="desc">' + eventData.description + '</p>' +
+                '<p>📅 ' + eventData.date + '</p>' +
+                '<p>📍 ' + eventData.location + '</p>' +
                 '</div>';
 
             grid.appendChild(card);
@@ -96,6 +141,59 @@
     function toggleSave(btn) {
         btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
     }
+
+    const Modal = (() => {
+        function init() {
+            const modal = document.createElement('div');
+            modal.id = 'cardModal';
+            modal.className = 'card-modal-overlay';
+            modal.innerHTML =
+                '<div class="card-modal">' +
+                '<div class="card-modal-header">' +
+                '<h2 id="modalTitle"></h2>' +
+                '<p class="event-type"><span id="modalBadge"></span></p>' +
+                '</div>' +
+                '<div class="card-modal-image">' +
+                '<img id="modalImage" src="" alt="">' +
+                '<button class="card-save-btn" id="modalSaveBtn" onclick="toggleSave(this)">❤️</button>' +
+                '</div>' +
+                '<div class="card-modal-body">' +
+                '<p id="modalDesc"></p>' +
+                '<div class="card-modal-meta">' +
+                '<p id="modalDate"></p>' +
+                '<p id="modalLocation"></p>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+            document.body.appendChild(modal);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) Modal.close();
+            });
+        }
+
+        function open(event) {
+            document.getElementById('modalTitle').textContent    = event.title || '';
+            document.getElementById('modalDesc').textContent     = event.description || '';
+            document.getElementById('modalDate').textContent     = '📅 ' + (event.date || '');
+            document.getElementById('modalLocation').textContent = '📍 ' + (event.location || '');
+            document.getElementById('modalImage').src            = event.image || '';
+            document.getElementById('modalImage').alt            = event.title || '';
+            const badge = document.getElementById('modalBadge');
+            badge.textContent = event.categoryLabel || '';
+            badge.className   = 'badge ' + (event.category || '');
+            document.getElementById('modalSaveBtn').textContent = '❤️';
+            document.getElementById('cardModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function close() {
+            document.getElementById('cardModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+        return { open, close };
+    })();
 
     document.addEventListener('DOMContentLoaded', loadSavedEvents);
 </script>

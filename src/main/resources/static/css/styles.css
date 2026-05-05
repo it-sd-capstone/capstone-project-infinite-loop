@@ -5,6 +5,7 @@ html, body {
     font-family: Arial, sans-serif;
     color: #e0e0e0;
     background-color: #111111;
+    overflow-x: hidden;
 }
 
 body {

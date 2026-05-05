@@ -1,36 +1,45 @@
 package com.happenings.controller;
 
-import com.happenings.entity.SavedEvent;
+import com.happenings.dto.SavedEventRequest;
+import com.happenings.dto.SavedEventResponse;
 import com.happenings.services.SavedEventService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/saved")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class SavedEventController {
 
-  private final SavedEventService savedEventService;
+  private final SavedEventService service;
 
-  public SavedEventController(SavedEventService savedEventService) {
-    this.savedEventService = savedEventService;
+  public SavedEventController(SavedEventService service) {
+    this.service = service;
   }
 
-  // Save a new saved event
+  // SAVE EVENT
   @PostMapping
-  public SavedEvent save(@RequestBody SavedEvent savedEvent) {
-    return savedEventService.save(savedEvent);
+  public ResponseEntity<SavedEventResponse> save(@RequestBody SavedEventRequest request) {
+    return ResponseEntity.ok(service.save(request));
   }
 
+  // DELETE
   @DeleteMapping("/{id}")
-  public void remove(@PathVariable Integer id) {
-    savedEventService.deleteById(id);
+  public ResponseEntity<String> delete(@PathVariable Integer id) {
+    boolean deleted = service.deleteById(id);
+
+    if (!deleted) {
+      return ResponseEntity.status(404).body("Not found");
+    }
+
+    return ResponseEntity.ok("Deleted");
   }
 
-  // Get all saved events for a specific user
+  // GET BY USER
   @GetMapping("/user/{userId}")
-  public List<SavedEvent> getByUser(@PathVariable Integer userId) {
-    return savedEventService.getByUserId(userId);
+  public ResponseEntity<List<SavedEventResponse>> getByUser(@PathVariable Integer userId) {
+    return ResponseEntity.ok(service.getByUserId(userId));
   }
 }

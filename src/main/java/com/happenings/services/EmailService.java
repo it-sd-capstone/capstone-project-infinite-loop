@@ -14,6 +14,7 @@ public class EmailService {
 //    }
 
     public void sendInviteEmail(String toEmail, String eventName) {
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
         message.setSubject("You're invited!");

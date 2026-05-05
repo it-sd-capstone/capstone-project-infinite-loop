@@ -1,0 +1,121 @@
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Register - Happenings</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="/css/login-register.css">
+</head>
+
+<body class="page-register">
+
+<main id="registerPage">
+
+    <section class="welcome-section">
+        <h1>Join Us</h1>
+        <p>Create an account to start planning your Happenings.</p>
+    </section>
+
+    <section class="register-section">
+
+        <h3>Create Account</h3>
+
+        <form id="registerForm">
+
+            <input type="text" name="username" placeholder="Username" required>
+
+            <input type="email" name="email" placeholder="Email Address" required>
+
+            <input type="password" name="password" placeholder="Password" required>
+
+            <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+
+            <div class="categories">
+                <p>Select your categories:</p>
+
+                <label><input type="checkbox" name="categories" value="music"> Music & Art</label>
+                <label><input type="checkbox" name="categories" value="sports"> Sports</label>
+                <label><input type="checkbox" name="categories" value="food"> Food & Drink</label>
+                <label><input type="checkbox" name="categories" value="outdoor"> Outdoor</label>
+                <label><input type="checkbox" name="categories" value="technology"> Technology</label>
+                <label><input type="checkbox" name="categories" value="community"> Community</label>
+            </div>
+
+            <button type="submit">Register</button>
+
+            <p id="registerMessage"></p>
+
+        </form>
+
+        <p class="register-link">
+            Already have an account?
+            <a href="login.html">Log in</a>
+        </p>
+
+    </section>
+
+</main>
+
+<script>
+    const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/auth/register";
+
+    document.getElementById("registerForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+
+        const username = form.username.value;
+        const email = form.email.value;
+        const password = form.password.value;
+        const confirmPassword = form.confirmPassword.value;
+
+        const categories = Array.from(
+            document.querySelectorAll('input[name="categories"]:checked')
+        ).map(cb => cb.value);
+
+        const message = document.getElementById("registerMessage");
+
+        // 🔥 basic validation
+        if (password !== confirmPassword) {
+            message.textContent = "Passwords do not match.";
+            message.style.color = "red";
+            return;
+        }
+
+        try {
+            const res = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username,
+                    email,
+                    password,
+                    categories
+                })
+            });
+
+            if (!res.ok) {
+                throw new Error("Registration failed");
+            }
+
+            message.textContent = "Account created successfully!";
+            message.style.color = "green";
+
+            // optional redirect
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 1500);
+
+        } catch (err) {
+            console.error(err);
+            message.textContent = "Error creating account.";
+            message.style.color = "red";
+        }
+    });
+</script>
+
+</body>
+</html>

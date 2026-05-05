@@ -1,8 +1,8 @@
 package com.happenings.services;
 
 import com.happenings.entity.UserCategory;
-import org.springframework.stereotype.Service;
 import com.happenings.repository.UserCategoryRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -15,23 +15,27 @@ public class UserCategoryService {
     this.repo = repo;
   }
 
+  // SAVE / ASSIGN CATEGORY
   public UserCategory save(UserCategory userCategory) {
     return repo.save(userCategory);
   }
 
-  public void deleteById(Integer id) {
-    repo.deleteById(id);
+  // DELETE (FIXED → returns boolean)
+  public boolean deleteById(Integer id) {
+    if (repo.existsById(id)) {
+      repo.deleteById(id);
+      return true;
+    }
+    return false;
   }
 
+  // GET BY USER ID
   public List<UserCategory> getByUserId(Integer userId) {
     return repo.findByUserId(userId);
   }
 
+  // GET ALL
   public List<UserCategory> getAll() {
     return repo.findAll();
-  }
-
-  public void remove(Integer id) {
-    repo.deleteById(id);
   }
 }

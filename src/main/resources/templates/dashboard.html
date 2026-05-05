@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard - Happenings</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/css/cards.css" />
+</head>
+
+<body>
+
+<header>
+    <h1>Happenings</h1>
+    <nav>
+        <a href="/dashboard" class="active">Home</a>
+        <a href="/allEvents">All Events</a>
+        <a href="/saved">Saved</a>
+        <a href="/myEvents">My Events</a>
+        <a href="/profile">
+            <img src="/images/profileEmpty.png" class="profile-pic" />
+        </a>
+    </nav>
+</header>
+
+<main>
+
+    <div class="home-banner">
+        <h2>Welcome back!</h2>
+        <p>Here's what's happening around you.</p>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <span class="section-title">Saved Events</span>
+            <a href="saved.html" class="see-all">See all →</a>
+        </div>
+        <div class="cards-grid" id="savedEventsContainer"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <span class="section-title">Recently Added</span>
+            <a href="allEvents.html" class="see-all">See all →</a>
+        </div>
+        <div class="cards-grid" id="cardsContainer"></div>
+    </div>
+
+</main>
+
+<script>
+    const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/events";
+
+    const cardsContainer = document.getElementById('cardsContainer');
+    const savedEventsContainer = document.getElementById('savedEventsContainer');
+
+    // ----------------------------
+    // LOAD EVENTS FROM BACKEND
+    // ----------------------------
+    async function loadDashboardEvents() {
+        try {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+
+            const formatted = data.map(e => ({
+                title: e.title,
+                description: e.description,
+                category: mapCategory(e.categoryId),
+                categoryLabel: mapCategoryLabel(e.categoryId),
+                image: "images/login-bg.jpg",
+                date: new Date(e.eventDatetime).toDateString(),
+                location: "Location TBD"
+            }));
+
+            // Recent = first 6 events
+            renderCards(formatted.slice(0, 6), cardsContainer);
+
+            // Saved (temporary fallback until backend is built)
+            renderCards(formatted.slice(0, 3), savedEventsContainer);
+
+            enableDragScroll(cardsContainer);
+            enableDragScroll(savedEventsContainer);
+
+        } catch (err) {
+            console.error(err);
+            cardsContainer.innerHTML = "<p style='color:white'>Failed to load events</p>";
+        }
+    }
+
+    // ----------------------------
+    // CATEGORY MAPPING
+    // ----------------------------
+    function mapCategory(id) {
+        switch(id) {
+            case 1: return "music";
+            case 2: return "sports";
+            case 3: return "technology";
+            case 4: return "food";
+            case 5: return "community";
+            default: return "community";
+        }
+    }
+
+    function mapCategoryLabel(id) {
+        switch(id) {
+            case 1: return "Music & Art";
+            case 2: return "Sports";
+            case 3: return "Technology";
+            case 4: return "Food & Drink";
+            case 5: return "Community";
+            default: return "Community";
+        }
+    }
+
+    // ----------------------------
+    // RENDER CARDS
+    // ----------------------------
+    function renderCards(data, container) {
+        container.innerHTML = '';
+
+        data.forEach(event => {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            card.innerHTML =
+                '<div class="card-header">' +
+                '<a class="event-name">' + event.title + '</a>' +
+                '<p class="event-type"><span class="badge ' + event.category + '">' + event.categoryLabel + '</span></p>' +
+                '</div>' +
+                '<div class="image-container">' +
+                '<img src="' + event.image + '">' +
+                '</div>' +
+                '<div class="card-details">' +
+                '<p class="desc">' + event.description + '</p>' +
+                '<p>📅 ' + event.date + '</p>' +
+                '<p>📍 ' + event.location + '</p>' +
+                '</div>';
+
+            container.appendChild(card);
+        });
+    }
+
+    // ----------------------------
+    // SCROLL
+    // ----------------------------
+    function enableDragScroll(grid) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        grid.addEventListener('mousedown', e => {
+            isDown = true;
+            grid.style.cursor = 'grabbing';
+            startX = e.pageX - grid.offsetLeft;
+            scrollLeft = grid.scrollLeft;
+        });
+
+        grid.addEventListener('mouseleave', () => {
+            isDown = false;
+            grid.style.cursor = 'grab';
+        });
+
+        grid.addEventListener('mouseup', () => {
+            isDown = false;
+            grid.style.cursor = 'grab';
+        });
+
+        grid.addEventListener('mousemove', e => {
+            if (!isDown) return;
+            e.preventDefault();
+            grid.scrollLeft = scrollLeft - (e.pageX - grid.offsetLeft - startX);
+        });
+
+        grid.style.cursor = 'grab';
+    }
+
+    // ----------------------------
+    // INIT
+    // ----------------------------
+    document.addEventListener('DOMContentLoaded', loadDashboardEvents);
+</script>
+
+</body>
+</html>

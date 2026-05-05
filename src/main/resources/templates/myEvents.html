@@ -1,0 +1,114 @@
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>My Events - Happenings</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/css/cards.css" />
+    <link rel="stylesheet" type="text/css" href="/css/myEvents.css" />
+</head>
+
+<body>
+
+<header>
+    <h1>Happenings</h1>
+
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/allEvents">All Events</a>
+        <a href="/saved">Saved</a>
+        <a href="/myEvents" class="active">My Events</a>
+        <a href="/profile">
+            <img src="/images/profileEmpty.png" class="profile-pic" />
+        </a>
+    </nav>
+</header>
+
+<main>
+
+    <div class="page-header">
+        <div class="page-header-row">
+            <h2>My Events</h2>
+
+            <a href="/createEvent" class="create-btn">
+                Create Event
+            </a>
+        </div>
+    </div>
+
+    <div class="myevents-section">
+        <div class="allevents-grid" id="myEventsGrid"></div>
+    </div>
+
+</main>
+
+<script>
+    const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/events/mine";
+
+    async function loadMyEvents() {
+        try {
+            const res = await fetch(API_URL);
+
+            if (!res.ok) {
+                throw new Error("Failed to fetch events");
+            }
+
+            const data = await res.json();
+
+            renderMyEvents(data);
+
+        } catch (err) {
+            console.error(err);
+
+            document.getElementById('myEventsGrid').innerHTML =
+                "<p style='color:white'>Unable to load your events.</p>";
+        }
+    }
+
+    function renderMyEvents(events) {
+        const grid = document.getElementById('myEventsGrid');
+        grid.innerHTML = '';
+
+        if (!events || events.length === 0) {
+            grid.innerHTML = "<p style='color:white'>You have no events yet.</p>";
+            return;
+        }
+
+        events.forEach(event => {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            card.innerHTML =
+                '<div class="card-header">' +
+                '<a class="event-name">' + event.title + '</a>' +
+                '<p class="event-type">' +
+                '<span class="badge">' + (event.category || "Event") + '</span>' +
+                '</p>' +
+                '</div>' +
+
+                '<div class="image-container">' +
+                '<img src="' + (event.image || "images/login-bg.jpg") + '" ' +
+                'alt="' + event.title + '">' +
+                '</div>' +
+
+                '<div class="card-details">' +
+                '<p class="desc">' + (event.description || "") + '</p>' +
+                '<p>📅 ' + (event.date || "") + '</p>' +
+                '<p>📍 ' + (event.location || "") + '</p>' +
+                '</div>' +
+
+                '<div class="card-actions">' +
+                '<button class="card-action-btn edit-btn">Edit</button>' +
+                '<button class="card-action-btn delete-btn">Delete</button>' +
+                '</div>';
+
+            grid.appendChild(card);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadMyEvents);
+</script>
+
+</body>
+</html>

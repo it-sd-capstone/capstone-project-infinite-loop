@@ -2,7 +2,6 @@ package com.happenings.services;
 
 import com.happenings.entity.Event;
 import com.happenings.repository.EventRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +9,11 @@ import java.util.List;
 @Service
 public class EventService {
 
-  @Autowired
-  private EventRepository eventRepository;
+  private final EventRepository eventRepository;
+
+  public EventService(EventRepository eventRepository) {
+    this.eventRepository = eventRepository;
+  }
 
   // GET ALL EVENTS
   public List<Event> getAllEvents() {
@@ -19,17 +21,24 @@ public class EventService {
   }
 
   // GET EVENT BY ID
-  public Event getEventById(int id) {
+  public Event getEventById(Integer id) {
     return eventRepository.findById(id).orElse(null);
   }
 
   // CREATE EVENT
   public Event createEvent(Event event) {
+
+    // optional validation
+    if (event.getTitle() == null || event.getTitle().isBlank()) {
+      throw new RuntimeException("Title is required");
+    }
+
     return eventRepository.save(event);
   }
 
-  // UPDATE EVENT (FIXED VERSION)
-  public Event updateEvent(int id, Event updatedEvent) {
+  // UPDATE EVENT
+  public Event updateEvent(Integer id, Event updatedEvent) {
+
     Event existing = eventRepository.findById(id).orElse(null);
 
     if (existing == null) {
@@ -39,8 +48,6 @@ public class EventService {
     existing.setTitle(updatedEvent.getTitle());
     existing.setDescription(updatedEvent.getDescription());
     existing.setEventDatetime(updatedEvent.getEventDatetime());
-
-    // IMPORTANT: use FK IDs (not objects)
     existing.setLocationId(updatedEvent.getLocationId());
     existing.setCategoryId(updatedEvent.getCategoryId());
 
@@ -48,7 +55,18 @@ public class EventService {
   }
 
   // DELETE EVENT
-  public void deleteEvent(int id) {
-    eventRepository.deleteById(id);
+  public boolean deleteEvent(Integer id) {
+
+    if (eventRepository.existsById(id)) {
+      eventRepository.deleteById(id);
+      return true;
+    }
+
+    return false;
+  }
+
+  //Gets the events by the user that created them
+  public List<Event> getEventsByUser(Integer userId) {
+    return eventRepository.findByCreatedByUserId(userId);
   }
 }

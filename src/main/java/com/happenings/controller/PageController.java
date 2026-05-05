@@ -6,81 +6,61 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
 
-    // -------------------------
     // HOME
-    // -------------------------
     @GetMapping({"/", "/home"})
     public String home() {
-        return "home"; // templates/home.html
+        return "home";
     }
 
-    // -------------------------
     // DASHBOARD
-    // -------------------------
     @GetMapping("/dashboard")
     public String dashboard() {
-        return "dashboard"; // templates/dashboard.html
+        return "dashboard";
     }
 
-    // -------------------------
     // ALL EVENTS
-    // -------------------------
     @GetMapping("/allEvents")
     public String allEvents() {
-        return "allEvents"; // templates/allEvents.html
+        return "allEvents";
     }
 
-    // -------------------------
     // MY EVENTS
-    // -------------------------
     @GetMapping("/myEvents")
     public String myEvents() {
-        return "myEvents"; // templates/myEvents.html
+        return "myEvents";
     }
 
-    // -------------------------
     // CREATE EVENT
-    // -------------------------
     @GetMapping("/createEvent")
     public String createEvent() {
-        return "createEvent"; // templates/createEvent.html
+        return "createEvent";
     }
 
-    // -------------------------
     // SAVED EVENTS
-    // -------------------------
     @GetMapping("/saved")
     public String saved() {
-        return "saved"; // templates/saved.html
+        return "saved";
     }
 
-    // -------------------------
     // PROFILE
-    // -------------------------
     @GetMapping("/profile")
     public String profile() {
-        return "profile"; // templates/profile.html
+        return "profile";
     }
 
-    // -------------------------
     // LOGIN
-    // -------------------------
     @GetMapping("/login")
     public String login() {
-        return "login"; // templates/login.html
+        return "login";
     }
 
-    // -------------------------
     // REGISTER
-    // -------------------------
     @GetMapping("/register")
     public String register() {
-        return "register"; // templates/register.html
+        return "register";
     }
 
-    // -------------------------
-    // LOGOUT (redirect to login)
-    // -------------------------
+    // LOGOUT
     @GetMapping("/logout")
     public String logout() {
         return "redirect:/login";

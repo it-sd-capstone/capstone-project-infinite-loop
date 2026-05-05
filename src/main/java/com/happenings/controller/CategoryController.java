@@ -18,12 +18,55 @@ public class CategoryController {
     this.categoryService = categoryService;
   }
 
-  // -------------------------
-  // GET ALL CATEGORIES
-  // -------------------------
+  // GET ALL
   @GetMapping
   public ResponseEntity<List<Category>> getAll() {
-    List<Category> categories = categoryService.getAll();
-    return ResponseEntity.ok(categories);
+    return ResponseEntity.ok(categoryService.getAll());
+  }
+
+  // GET BY ID
+  @GetMapping("/{id}")
+  public ResponseEntity<Category> getById(@PathVariable Integer id) {
+
+    Category category = categoryService.getById(id);
+
+    if (category == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(category);
+  }
+
+  // CREATE
+  @PostMapping
+  public ResponseEntity<Category> create(@RequestBody Category category) {
+    return ResponseEntity.ok(categoryService.create(category));
+  }
+
+  // UPDATE
+  @PutMapping("/{id}")
+  public ResponseEntity<Category> update(@PathVariable Integer id,
+                                         @RequestBody Category category) {
+
+    Category updated = categoryService.update(id, category);
+
+    if (updated == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(updated);
+  }
+
+  // DELETE
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Integer id) {
+
+    boolean deleted = categoryService.delete(id);
+
+    if (!deleted) {
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok().build();
   }
 }

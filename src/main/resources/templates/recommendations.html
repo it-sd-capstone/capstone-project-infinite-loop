@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Dashboard - Happenings</title>
+    <title>Recommendations - Happenings</title>
 
     <link rel="stylesheet" type="text/css" href="/css/styles.css" />
     <link rel="stylesheet" type="text/css" href="/css/cards.css" />
@@ -14,9 +14,9 @@
 <header>
     <h1>Happenings</h1>
     <nav>
-        <a href="/dashboard" class="active">Home</a>
+        <a href="/dashboard">Home</a>
         <a href="/allEvents">All Events</a>
-        <a href="/recommendations">Recommended</a>
+        <a href="/recommendations" class="active">Recommended</a>
         <a href="/saved">Saved</a>
         <a href="/myEvents">My Events</a>
         <a href="/profile">
@@ -28,72 +28,23 @@
 <main>
 
     <div class="home-banner">
-        <h2>Welcome back!</h2>
-        <p>Here's what's happening around you.</p>
+        <h2>Recommended for You</h2>
+        <p>Events picked based on your interest categories.</p>
     </div>
 
-    <div class="section">
-        <div class="section-header">
-            <span class="section-title">Saved Events</span>
-            <a href="/saved" class="see-all">See all →</a>
-        </div>
-        <div class="cards-grid" id="savedEventsContainer"></div>
-    </div>
+    <div class="rec-tags" id="recTags"></div>
 
     <div class="section">
-        <div class="section-header">
-            <span class="section-title">Recently Added</span>
-            <a href="/allEvents" class="see-all">See all →</a>
-        </div>
-        <div class="cards-grid" id="cardsContainer"></div>
+        <div class="allevents-grid" id="recGrid"></div>
     </div>
 
 </main>
 
 <script>
-    const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/events";
+    const API_URL = 'https://capstone-project-infinite-loop-f0nr.onrender.com/api/events';
 
-    const cardsContainer = document.getElementById('cardsContainer');
-    const savedEventsContainer = document.getElementById('savedEventsContainer');
-
-    // ----------------------------
-    // LOAD EVENTS FROM BACKEND
-    // ----------------------------
-    async function loadDashboardEvents() {
-        try {
-            const response = await fetch(API_URL);
-            const data = await response.json();
-
-            const formatted = data.map(e => ({
-                title: e.title,
-                description: e.description,
-                category: mapCategory(e.categoryId),
-                categoryLabel: mapCategoryLabel(e.categoryId),
-                image: mapCategoryImage(e.categoryId),
-                date: new Date(e.eventDatetime).toDateString(),
-                location: "Location TBD"
-            }));
-
-            // Recent = first 6 events
-            renderCards(formatted.slice(0, 6), cardsContainer);
-
-            // Saved (temporary fallback until backend is built)
-            renderCards(formatted.slice(0, 3), savedEventsContainer);
-
-            enableDragScroll(cardsContainer);
-            enableDragScroll(savedEventsContainer);
-
-        } catch (err) {
-            console.error(err);
-            cardsContainer.innerHTML = "<p style='color:white'>Failed to load events</p>";
-        }
-    }
-
-    // ----------------------------
-    // CATEGORY MAPPING
-    // ----------------------------
     function mapCategory(id) {
-        switch(id) {
+        switch (id) {
             case 1: return "music";
             case 2: return "sports";
             case 3: return "technology";
@@ -104,7 +55,7 @@
     }
 
     function mapCategoryLabel(id) {
-        switch(id) {
+        switch (id) {
             case 1: return "Music & Art";
             case 2: return "Sports";
             case 3: return "Technology";
@@ -125,96 +76,95 @@
         }
     }
 
-    // ----------------------------
-    // RENDER CARDS
-    // ----------------------------
-    function renderCards(data, container) {
-        container.innerHTML = '';
+    function categoryNameToId(name) {
+        switch (name) {
+            case "music":      return 1;
+            case "sports":     return 2;
+            case "technology": return 3;
+            case "food":       return 4;
+            case "community":  return 5;
+            default:           return 5;
+        }
+    }
 
-        data.forEach(event => {
+    function getUserCategories() {
+        try {
+            const saved = localStorage.getItem('happenings_categories');
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    }
+
+    async function loadRecommendations() {
+        const grid = document.getElementById('recGrid');
+        const tagsContainer = document.getElementById('recTags');
+        const userCategories = getUserCategories();
+
+        try {
+            const response = await fetch(API_URL);
+
+            if (!response.ok) throw new Error('HTTP error ' + response.status);
+
+            const data = await response.json();
+
+            const filtered = data.filter(e => {
+                const cat = mapCategory(e.categoryId);
+                return userCategories.includes(cat);
+            });
+
+            renderEvents(filtered);
+
+        } catch (err) {
+            console.error(err);
+            grid.innerHTML = "<p style='color:#aaa'>Unable to load recommendations right now.</p>";
+        }
+    }
+
+    function renderEvents(events) {
+        const grid = document.getElementById('recGrid');
+        grid.innerHTML = '';
+
+        events.forEach(e => {
             const card = document.createElement('div');
             card.className = 'card';
 
             const eventData = {
-                title:         event.title,
-                description:   event.description,
-                category:      event.category,
-                categoryLabel: event.categoryLabel,
-                image:         event.image,
-                date:          event.date,
-                location:      event.location
+                title:         e.title || 'Untitled',
+                description:   e.description || '',
+                category:      mapCategory(e.categoryId),
+                categoryLabel: mapCategoryLabel(e.categoryId),
+                image:         mapCategoryImage(e.categoryId),
+                date:          new Date(e.eventDatetime).toDateString(),
+                location:      e.location || 'TBD'
             };
 
-            card.addEventListener('click', function(e) {
-                if (e.target.classList.contains('card-save-btn')) return;
+            card.addEventListener('click', function(ev) {
+                if (ev.target.classList.contains('card-save-btn')) return;
                 Modal.open(eventData);
             });
 
             card.innerHTML =
                 '<div class="card-header">' +
-                '<a class="event-name">' + event.title + '</a>' +
-                '<p class="event-type"><span class="badge ' + event.category + '">' + event.categoryLabel + '</span></p>' +
+                '<a class="event-name">' + (e.title || 'Untitled') + '</a>' +
+                '<p class="event-type"><span class="badge ' + mapCategory(e.categoryId) + '">' + mapCategoryLabel(e.categoryId) + '</span></p>' +
                 '</div>' +
                 '<div class="image-container">' +
-                '<img src="' + event.image + '">' +
+                '<img src="' + mapCategoryImage(e.categoryId) + '" alt="' + (e.title || '') + '">' +
                 '<button class="card-save-btn" onclick="toggleSave(this)">🤍</button>' +
                 '</div>' +
                 '<div class="card-details">' +
-                '<p class="desc">' + event.description + '</p>' +
-                '<p>📅 ' + event.date + '</p>' +
-                '<p>📍 ' + event.location + '</p>' +
+                '<p class="desc">' + (e.description || '') + '</p>' +
+                '<p>📅 ' + new Date(e.eventDatetime).toDateString() + '</p>' +
+                '<p>📍 ' + (e.location || 'TBD') + '</p>' +
                 '</div>';
 
-            container.appendChild(card);
+            grid.appendChild(card);
         });
     }
 
     function toggleSave(btn) {
         btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
-    }
-
-    // ----------------------------
-    // SCROLL
-    // ----------------------------
-    function enableDragScroll(grid) {
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-        let hasDragged = false;
-
-        grid.addEventListener('mousedown', e => {
-            isDown = true;
-            hasDragged = false;
-            grid.style.cursor = 'grabbing';
-            startX = e.pageX - grid.offsetLeft;
-            scrollLeft = grid.scrollLeft;
-        });
-
-        grid.addEventListener('mouseleave', () => {
-            isDown = false;
-            grid.style.cursor = 'grab';
-        });
-
-        grid.addEventListener('mouseup', () => {
-            isDown = false;
-            grid.style.cursor = 'grab';
-        });
-
-        grid.addEventListener('mousemove', e => {
-            if (!isDown) return;
-            e.preventDefault();
-            hasDragged = true;
-            grid.scrollLeft = scrollLeft - (e.pageX - grid.offsetLeft - startX);
-        });
-
-        grid.style.cursor = 'grab';
-
-        grid.addEventListener('click', e => {
-            if (hasDragged) {
-                e.stopPropagation();
-                hasDragged = false;
-            }
-        }, true);
     }
 
     const Modal = (() => {
@@ -270,10 +220,7 @@
         return { open, close };
     })();
 
-    // ----------------------------
-    // INIT
-    // ----------------------------
-    document.addEventListener('DOMContentLoaded', loadDashboardEvents);
+    document.addEventListener('DOMContentLoaded', loadRecommendations);
 </script>
 
 </body>

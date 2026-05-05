@@ -14,10 +14,6 @@
     <h1>Happenings</h1>
 
     <nav>
-        <a href="/home">Home</a>
-        <a href="/allEvents">All Events</a>
-        <a href="/saved">Saved</a>
-        <a href="/myEvents">My Events</a>
         <a href="/login">Log in</a>
         <a href="/register" class="btn-reg">Register</a>
     </nav>
@@ -37,7 +33,7 @@
         <div class="section-header">
             <span class="section-title">Recently added</span>
 
-            <a href="allEvents.html" class="see-all">See all &rarr;</a>
+            <a href="/allEvents" class="see-all">See all &rarr;</a>
         </div>
 
         <div class="cards-grid" id="cardsContainer"></div>
@@ -46,30 +42,104 @@
 </main>
 
 <script>
-    const cardsContainer = document.getElementById('cardsContainer');
+    const API_URL = 'https://capstone-project-infinite-loop-f0nr.onrender.com/api/events';
 
-    // TODO: Replace with API later
-    const eventsData = [
-        {
-            title: 'Bug Eating',
-            category: 'food',
-            categoryLabel: 'Food & Drink',
-            image: 'images/login-bg.jpg',
-            description: 'Thousands of free tasty bugs to try.',
-            date: 'Sun 4 May - 11:00 AM',
-            location: 'The Park'
+    const calendarIcon = "📅";
+    const locationIcon = "📍";
+
+    function mapCategory(id) {
+        switch (id) {
+            case 1: return "music";
+            case 2: return "sports";
+            case 3: return "technology";
+            case 4: return "food";
+            case 5: return "community";
+            default: return "community";
         }
-    ];
+    }
 
-    const calendarIcon = "&#128197;";
-    const locationIcon = "&#128205;";
+    function mapCategoryLabel(id) {
+        switch (id) {
+            case 1: return "Music & Art";
+            case 2: return "Sports";
+            case 3: return "Technology";
+            case 4: return "Food & Drink";
+            case 5: return "Community";
+            default: return "Community";
+        }
+    }
+
+    function mapCategoryImage(id) {
+        switch (id) {
+            case 1: return "/images/musicCard.png";
+            case 2: return "/images/sportsCard.jpg";
+            case 3: return "/images/TechnologyCard.png";
+            case 4: return "/images/FoodDrinkCard.jpg";
+            case 5: return "/images/CommunityCard.png";
+            default: return "/images/login-bg.jpg";
+        }
+    }
+
+    async function loadEvents() {
+        const container = document.getElementById('cardsContainer');
+
+        try {
+            const response = await fetch(API_URL);
+
+            if (!response.ok) {
+                throw new Error('HTTP error ' + response.status);
+            }
+
+            const data = await response.json();
+
+            const recent = data
+                .sort((a, b) => new Date(b.eventDatetime) - new Date(a.eventDatetime))
+                .slice(0, 6)
+                .map(e => ({
+                    title: e.title || 'Untitled Event',
+                    category: mapCategory(e.categoryId),
+                    categoryLabel: mapCategoryLabel(e.categoryId),
+                    image: mapCategoryImage(e.categoryId),
+                    description: e.description || '',
+                    date: new Date(e.eventDatetime).toDateString(),
+                    location: e.location || 'TBD'
+                }));
+
+            if (recent.length === 0) {
+                container.innerHTML = "<p style='color:#aaa'>No events yet. Check back soon!</p>";
+                return;
+            }
+
+            renderCards(recent);
+            enableDragScroll(container);
+
+        } catch (err) {
+            console.error('Failed to load events:', err);
+            container.innerHTML = "<p style='color:#aaa'>Unable to load events right now.</p>";
+        }
+    }
 
     function renderCards(data) {
-        cardsContainer.innerHTML = '';
+        const container = document.getElementById('cardsContainer');
+        container.innerHTML = '';
 
         data.forEach(event => {
             const card = document.createElement('div');
             card.className = 'card';
+
+            const eventData = {
+                title:         event.title,
+                description:   event.description,
+                category:      event.category,
+                categoryLabel: event.categoryLabel,
+                image:         event.image,
+                date:          event.date,
+                location:      event.location
+            };
+
+            card.addEventListener('click', function(e) {
+                Modal.open(eventData);
+            });
 
             card.innerHTML =
                 '<div class="card-header">' +
@@ -90,7 +160,7 @@
                 '<p>' + locationIcon + ' ' + event.location + '</p>' +
                 '</div>';
 
-            cardsContainer.appendChild(card);
+            container.appendChild(card);
         });
     }
 
@@ -98,9 +168,11 @@
         let isDown = false;
         let startX;
         let scrollLeft;
+        let hasDragged = false;
 
         grid.addEventListener('mousedown', e => {
             isDown = true;
+            hasDragged = false;
             grid.style.cursor = 'grabbing';
             startX = e.pageX - grid.offsetLeft;
             scrollLeft = grid.scrollLeft;
@@ -119,16 +191,72 @@
         grid.addEventListener('mousemove', e => {
             if (!isDown) return;
             e.preventDefault();
+            hasDragged = true;
             grid.scrollLeft = scrollLeft - (e.pageX - grid.offsetLeft - startX);
         });
 
         grid.style.cursor = 'grab';
+
+        grid.addEventListener('click', e => {
+            if (hasDragged) {
+                e.stopPropagation();
+                hasDragged = false;
+            }
+        }, true);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        renderCards(eventsData);
-        enableDragScroll(cardsContainer);
-    });
+    const Modal = (() => {
+        function init() {
+            const modal = document.createElement('div');
+            modal.id = 'cardModal';
+            modal.className = 'card-modal-overlay';
+            modal.innerHTML =
+                '<div class="card-modal">' +
+                '<div class="card-modal-header">' +
+                '<h2 id="modalTitle"></h2>' +
+                '<p class="event-type"><span id="modalBadge"></span></p>' +
+                '</div>' +
+                '<div class="card-modal-image">' +
+                '<img id="modalImage" src="" alt="">' +
+                '</div>' +
+                '<div class="card-modal-body">' +
+                '<p id="modalDesc"></p>' +
+                '<div class="card-modal-meta">' +
+                '<p id="modalDate"></p>' +
+                '<p id="modalLocation"></p>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+            document.body.appendChild(modal);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) Modal.close();
+            });
+        }
+
+        function open(event) {
+            document.getElementById('modalTitle').textContent    = event.title || '';
+            document.getElementById('modalDesc').textContent     = event.description || '';
+            document.getElementById('modalDate').textContent     = '📅 ' + (event.date || '');
+            document.getElementById('modalLocation').textContent = '📍 ' + (event.location || '');
+            document.getElementById('modalImage').src            = event.image || '';
+            document.getElementById('modalImage').alt            = event.title || '';
+            const badge = document.getElementById('modalBadge');
+            badge.textContent = event.categoryLabel || '';
+            badge.className   = 'badge ' + (event.category || '');
+            document.getElementById('cardModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function close() {
+            document.getElementById('cardModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+        return { open, close};
+    })();
+
+    document.addEventListener('DOMContentLoaded', loadEvents);
 </script>
 
 </body>

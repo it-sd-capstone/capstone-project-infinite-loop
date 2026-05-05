@@ -32,8 +32,9 @@
 
 .image-container {
     width: 100%;
-    height: 130px;
+    height: 170px;
     overflow: hidden;
+    position: relative;
 }
 
 .image-container img {
@@ -136,8 +137,9 @@
     flex-direction: row;
     gap: 12px;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: visible;
     flex-wrap: nowrap;
+    padding-top: 4px;
 }
 
 .cards-grid::-webkit-scrollbar {
@@ -324,4 +326,141 @@ main {
     border-color: #06b6d4;
     color: #060f13;
     font-weight: 700;
+}
+
+/* Save Button*/
+.card-save-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(6, 15, 19, 0.7);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: transform 0.15s ease, background 0.2s ease;
+    z-index: 10;
+}
+
+.card-save-btn:hover {
+    transform: scale(1.15);
+    background: rgba(6, 15, 19, 0.9);
+}
+
+.rec-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 40px 24px;
+    justify-content: center;
+}
+
+.rec-tag {
+    font-size: 13px;
+    padding: 6px 16px;
+    border-radius: 20px;
+}
+.card-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.card-modal-overlay.active {
+    display: flex;
+}
+
+.card-modal {
+    background: #242424;
+    border: 1px solid #333;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 1000px;
+    min-height: 700px;
+    overflow: hidden;
+    position: relative;
+    animation: modalIn 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes modalIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+}
+
+.card-modal-image {
+    width: 100%;
+    height: 380px;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.card-modal-image .card-save-btn {
+    font-size: 35px;
+    width: 50px;
+    height: 50px;
+}
+
+.card-modal-header {
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid #333;
+}
+
+.card-modal-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #e0e0e0;
+    margin: 0 0 6px;
+}
+
+.card-modal-header .event-type {
+    margin: 0;
+}
+
+.card-modal-body {
+    padding: 16px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.card-modal-body p {
+    font-size: 16px;
+    color: #aaa;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.card-modal-meta {
+    border-top: 1px solid #333;
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.card-modal-meta p {
+    font-size: 16px;
+    color: #aaa;
+    margin: 0;
 }

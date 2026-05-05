@@ -17,6 +17,7 @@
     <nav>
         <a href="/dashboard">Home</a>
         <a href="/allEvents" class="active">All Events</a>
+        <a href="/recommendations">Recommended</a>
         <a href="/saved">Saved</a>
         <a href="/myEvents">My Events</a>
         <a href="/profile">
@@ -102,7 +103,7 @@
                 description: e.description || "",
                 category: mapCategory(e.categoryId),
                 categoryLabel: mapCategoryLabel(e.categoryId),
-                image: "images/login-bg.jpg",
+                image: mapCategoryImage(e.categoryId),
                 date: formatDate(e.eventDatetime),
                 location: e.location || "TBD",
                 timestamp: new Date(e.eventDatetime).getTime()
@@ -140,6 +141,17 @@
             case 4: return "Food & Drink";
             case 5: return "Community";
             default: return "Community";
+        }
+    }
+
+    function mapCategoryImage(id) {
+        switch (id) {
+            case 1: return "/images/musicCard.png";
+            case 2: return "/images/sportsCard.jpg";
+            case 3: return "/images/TechnologyCard.png";
+            case 4: return "/images/FoodDrinkCard.jpg";
+            case 5: return "/images/CommunityCard.png";
+            default: return "/images/login-bg.jpg";
         }
     }
 
@@ -232,26 +244,35 @@
             const card = document.createElement('div');
             card.className = 'card';
 
-            card.innerHTML = `
-                <div class="card-header">
-                    <a class="event-name">${event.title}</a>
-                    <p class="event-type">
-                        <span class="badge ${event.category}">
-                            ${event.categoryLabel}
-                        </span>
-                    </p>
-                </div>
+            const eventData = {
+                title: event.title,
+                description: event.description,
+                category: event.category,
+                categoryLabel: event.categoryLabel,
+                image: event.image,
+                date: event.date,
+                location: event.location
+            };
 
-                <div class="image-container">
-                    <img src="${event.image}" alt="${event.title}">
-                </div>
+            card.addEventListener('click', function(e) {
+                if (e.target.classList.contains('card-save-btn')) return;
+                Modal.open(eventData);
+            });
 
-                <div class="card-details">
-                    <p class="desc">${event.description}</p>
-                    <p>📅 ${event.date}</p>
-                    <p>📍 ${event.location}</p>
-                </div>
-            `;
+            card.innerHTML =
+                '<div class="card-header">' +
+                '<a class="event-name">' + event.title + '</a>' +
+                '<p class="event-type"><span class="badge ' + event.category + '">' + event.categoryLabel + '</span></p>' +
+                '</div>' +
+                '<div class="image-container">' +
+                '<img src="' + event.image + '">' +
+                '<button class="card-save-btn" onclick="toggleSave(this)">🤍</button>' +
+                '</div>' +
+                '<div class="card-details">' +
+                '<p class="desc">' + event.description + '</p>' +
+                '<p>📅 ' + event.date + '</p>' +
+                '<p>📍 ' + event.location + '</p>' +
+                '</div>';
 
             grid.appendChild(card);
         });
@@ -276,6 +297,10 @@
         }
     }
 
+    function toggleSave(btn) {
+        btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
+    }
+
     // =========================
     // CLOSE SORT MENU
     // =========================
@@ -286,9 +311,59 @@
         }
     });
 
-    // =========================
-    // INIT
-    // =========================
+    const Modal = (() => {
+        function init() {
+            const modal = document.createElement('div');
+            modal.id = 'cardModal';
+            modal.className = 'card-modal-overlay';
+            modal.innerHTML =
+                '<div class="card-modal">' +
+                '<div class="card-modal-header">' +
+                '<h2 id="modalTitle"></h2>' +
+                '<p class="event-type"><span id="modalBadge"></span></p>' +
+                '</div>' +
+                '<div class="card-modal-image">' +
+                '<img id="modalImage" src="" alt="">' +
+                '<button class="card-save-btn" id="modalSaveBtn" onclick="toggleSave(this)">🤍</button>' +
+                '</div>' +
+                '<div class="card-modal-body">' +
+                '<p id="modalDesc"></p>' +
+                '<div class="card-modal-meta">' +
+                '<p id="modalDate"></p>' +
+                '<p id="modalLocation"></p>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+            document.body.appendChild(modal);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) Modal.close();
+            });
+        }
+
+        function open(event) {
+            document.getElementById('modalTitle').textContent    = event.title || '';
+            document.getElementById('modalDesc').textContent     = event.description || '';
+            document.getElementById('modalDate').textContent     = '📅 ' + (event.date || '');
+            document.getElementById('modalLocation').textContent = '📍 ' + (event.location || '');
+            document.getElementById('modalImage').src            = event.image || '';
+            document.getElementById('modalImage').alt            = event.title || '';
+            const badge = document.getElementById('modalBadge');
+            badge.textContent = event.categoryLabel || '';
+            badge.className   = 'badge ' + (event.category || '');
+            document.getElementById('modalSaveBtn').textContent = '🤍';
+            document.getElementById('cardModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function close() {
+            document.getElementById('cardModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+        return { open, close };
+    })();
+
     document.addEventListener('DOMContentLoaded', loadEvents);
 </script>
 

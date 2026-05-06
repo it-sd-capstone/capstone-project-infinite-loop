@@ -3,7 +3,6 @@ package com.happenings.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 public class RootController {
 
@@ -12,4 +11,3 @@ public class RootController {
     return "Backend is running";
   }
 }
-

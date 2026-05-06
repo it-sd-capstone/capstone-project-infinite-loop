@@ -18,6 +18,14 @@ public class UserCategoryController {
     this.userCategoryService = userCategoryService;
   }
 
+  // -------------------------------------
+  // RETRIEVES USER'S PREFERRED CATEGORIES
+  // -------------------------------------
+  @GetMapping("/users/{id}/categories")
+  public ResponseEntity<?> getUserCategories(@PathVariable Integer id) {
+    return ResponseEntity.ok(userCategoryService.getCategoryNamesByUserId(id));
+  }
+
   // -------------------------
   // ASSIGN CATEGORY TO USER
   // -------------------------

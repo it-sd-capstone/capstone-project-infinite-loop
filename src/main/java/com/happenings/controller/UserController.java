@@ -36,7 +36,6 @@ public class UserController {
     User updated = new User();
     updated.setUsername(req.getUsername());
     updated.setEmail(req.getEmail());
-    updated.setName(req.getName());
     updated.setPassword(req.getPassword());
 
     User saved = userService.updateProfile(id, updated);

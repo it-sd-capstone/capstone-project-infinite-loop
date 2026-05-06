@@ -41,33 +41,6 @@ public class UserService {
   }
 
   // REGISTER USER
-//  public User register(User user) {
-//
-//    if (user.getEmail() == null || user.getPassword() == null ||
-//            user.getUsername() == null) {
-//      throw new RuntimeException("Missing required fields");
-//    }
-//
-//    // Duplicate checks using existsBy
-//    if (repo.existsByEmail(user.getEmail())) {
-//      throw new RuntimeException("Email already in use");
-//    }
-//
-//    if (repo.existsByUsername(user.getUsername())) {
-//      throw new RuntimeException("Username already in use");
-//    }
-//
-//    // Encode password
-//    user.setPassword(passwordEncoder.encode(user.getPassword()));
-//
-//    // Default role
-//    if (user.getRole() == null) {
-//      user.setRole("USER");
-//    }
-//
-//    return repo.save(user);
-//  }
-
   public User register(User user, List<String> categories) {
 
     // validate
@@ -157,5 +130,11 @@ public class UserService {
     }
 
     return repo.save(existing);
+  }
+
+  // GET BY USERNAME
+  public User getByUsername(String username) {
+    return repo.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
   }
 }

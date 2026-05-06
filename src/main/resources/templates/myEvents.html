@@ -44,8 +44,25 @@
 
 </main>
 
+<!-- INVITE MODAL -->
+<div id="inviteModal" class="card-modal-overlay">
+    <div class="card-modal">
+        <h2>Invite User</h2>
+
+        <input type="email" id="inviteEmail" placeholder="Enter email address" />
+
+        <div style="margin-top: 15px;">
+            <button onclick="sendInvite()">Send Invite</button>
+            <button onclick="closeInvite()">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/events/mine";
+    // const API_URL = 'https://capstone-project-infinite-loop-f0nr.onrender.com/api/events/mine';
+    const API_URL = "http://localhost:8080/api/events/mine";
+
+    let selectedEventId = null;
 
     async function loadMyEvents() {
         try {
@@ -56,7 +73,6 @@
             }
 
             const data = await res.json();
-
             renderMyEvents(data);
 
         } catch (err) {
@@ -114,18 +130,19 @@
             card.className = 'card';
 
             const eventData = {
-                title:         event.title || 'Untitled',
-                description:   event.description || '',
-                category:      mapCategory(event.categoryId),
+                title: event.title || 'Untitled',
+                description: event.description || '',
+                category: mapCategory(event.categoryId),
                 categoryLabel: mapCategoryLabel(event.categoryId),
-                image:         mapCategoryImage(event.categoryId),
-                date:          new Date(event.eventDatetime).toDateString(),
-                location:      event.location || 'TBD'
+                image: mapCategoryImage(event.categoryId),
+                date: new Date(event.eventDatetime).toDateString(),
+                location: event.location || 'TBD'
             };
 
             card.addEventListener('click', function(e) {
                 if (e.target.classList.contains('card-action-btn')) return;
                 if (e.target.classList.contains('card-save-btn')) return;
+                if (e.target.classList.contains('invite-btn')) return;
                 Modal.open(eventData);
             });
 
@@ -134,28 +151,75 @@
                 '<a class="event-name">' + (event.title || 'Untitled') + '</a>' +
                 '<p class="event-type"><span class="badge ' + mapCategory(event.categoryId) + '">' + mapCategoryLabel(event.categoryId) + '</span></p>' +
                 '</div>' +
+
                 '<div class="image-container">' +
                 '<img src="' + mapCategoryImage(event.categoryId) + '">' +
                 '<button class="card-save-btn" onclick="toggleSave(this)">🤍</button>' +
                 '</div>' +
+
                 '<div class="card-details">' +
                 '<p class="desc">' + (event.description || '') + '</p>' +
                 '<p>📅 ' + new Date(event.eventDatetime).toDateString() + '</p>' +
                 '<p>📍 ' + (event.location || 'TBD') + '</p>' +
                 '</div>' +
+
                 '<div class="card-actions">' +
                 '<button class="card-action-btn edit-btn">Edit</button>' +
                 '<button class="card-action-btn delete-btn">Delete</button>' +
+                '<button class="card-action-btn invite-btn" data-id="' + event.eventId + '">Invite</button>' +
                 '</div>';
 
             grid.appendChild(card);
         });
     }
 
+    // SAVE TOGGLE
     function toggleSave(btn) {
         btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
     }
 
+    // OPEN INVITE
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("invite-btn")) {
+            selectedEventId = e.target.getAttribute("data-id");
+            document.getElementById("inviteModal").classList.add("active");
+        }
+    });
+
+    function closeInvite() {
+        document.getElementById("inviteModal").classList.remove("active");
+        document.getElementById("inviteEmail").value = "";
+    }
+
+    async function sendInvite() {
+        const email = document.getElementById("inviteEmail").value;
+        const token = localStorage.getItem("token");
+
+        try {
+            const res = await fetch("/api/invitations/invite", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    email: email,
+                    eventId: selectedEventId
+                })
+            });
+
+            if (!res.ok) throw new Error("Invite failed");
+
+            alert("Invite sent!");
+            closeInvite();
+
+        } catch (err) {
+            console.error(err);
+            alert("Failed to send invite");
+        }
+    }
+
+    // MODAL (existing event modal)
     const Modal = (() => {
         function init() {
             const modal = document.createElement('div');
@@ -178,22 +242,25 @@
                 '</div>' +
                 '</div>' +
                 '</div>';
+
             document.body.appendChild(modal);
+
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) Modal.close();
             });
         }
 
         function open(event) {
-            document.getElementById('modalTitle').textContent    = event.title || '';
-            document.getElementById('modalDesc').textContent     = event.description || '';
-            document.getElementById('modalDate').textContent     = '📅 ' + (event.date || '');
+            document.getElementById('modalTitle').textContent = event.title || '';
+            document.getElementById('modalDesc').textContent = event.description || '';
+            document.getElementById('modalDate').textContent = '📅 ' + (event.date || '');
             document.getElementById('modalLocation').textContent = '📍 ' + (event.location || '');
-            document.getElementById('modalImage').src            = event.image || '';
-            document.getElementById('modalImage').alt            = event.title || '';
+            document.getElementById('modalImage').src = event.image || '';
+
             const badge = document.getElementById('modalBadge');
             badge.textContent = event.categoryLabel || '';
-            badge.className   = 'badge ' + (event.category || '');
+            badge.className = 'badge ' + (event.category || '');
+
             document.getElementById('cardModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -202,7 +269,6 @@
             document.getElementById('cardModal').classList.remove('active');
             document.body.style.overflow = '';
         }
-
 
         document.addEventListener('DOMContentLoaded', init);
         return { open, close };

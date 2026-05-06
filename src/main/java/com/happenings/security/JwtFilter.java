@@ -33,6 +33,11 @@ public class JwtFilter extends OncePerRequestFilter {
                                   FilterChain chain)
           throws ServletException, IOException {
 
+    if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+      chain.doFilter(req, res);
+      return;
+    }
+
     String authHeader = req.getHeader("Authorization");
 
     if (authHeader != null && authHeader.startsWith("Bearer ")) {

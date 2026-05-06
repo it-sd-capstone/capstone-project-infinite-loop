@@ -1,35 +1,47 @@
 package com.happenings.controller;
 
 import com.happenings.dto.UserResponse;
+import com.happenings.dto.UserUpdateRequest;
 import com.happenings.entity.User;
 import com.happenings.mapper.UserMapper;
 import com.happenings.services.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "*")
 public class UserController {
 
   private final UserService userService;
-  private final UserMapper userMapper;
 
-  public UserController(UserService userService, UserMapper userMapper) {
+  public UserController(UserService userService) {
     this.userService = userService;
-    this.userMapper = userMapper;
   }
 
+  // GET USER BY ID
   @GetMapping("/{id}")
-  public UserResponse findById(@PathVariable Integer id) {
-    User user = userService.findById(id);
-    return userMapper.toResponse(user);   // ✔ FIXED — instance call
+  public ResponseEntity<?> getUser(@PathVariable Integer id) {
+    User user = userService.getById(id);
+    UserResponse dto = UserMapper.toResponse(user);
+    return ResponseEntity.ok(dto);
   }
 
+  // UPDATE PROFILE
   @PutMapping("/{id}")
-  public UserResponse updateProfile(
+  public ResponseEntity<?> updateUser(
           @PathVariable Integer id,
-          @RequestBody User updated
-  ) {
+          @RequestBody UserUpdateRequest req) {
+
+    User updated = new User();
+    updated.setUsername(req.getUsername());
+    updated.setEmail(req.getEmail());
+    updated.setName(req.getName());
+    updated.setPassword(req.getPassword());
+
     User saved = userService.updateProfile(id, updated);
-    return userMapper.toResponse(saved);   // ✔ FIXED — instance call
+    UserResponse dto = UserMapper.toResponse(saved);
+
+    return ResponseEntity.ok(dto);
   }
 }

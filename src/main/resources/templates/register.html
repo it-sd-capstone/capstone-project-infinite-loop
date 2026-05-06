@@ -27,11 +27,20 @@
 
             <input type="email" name="email" placeholder="Email Address" required>
 
-            <input type="text" name="name" placeholder="Full Name" required>
-
             <input type="password" name="password" placeholder="Password" required>
 
             <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+
+            <div class="categories">
+                <p>Select your categories:</p>
+
+                <label><input type="checkbox" name="categories" value="music"> Music & Art</label>
+                <label><input type="checkbox" name="categories" value="sports"> Sports</label>
+                <label><input type="checkbox" name="categories" value="food"> Food & Drink</label>
+                <label><input type="checkbox" name="categories" value="outdoor"> Outdoor</label>
+                <label><input type="checkbox" name="categories" value="technology"> Technology</label>
+                <label><input type="checkbox" name="categories" value="community"> Community</label>
+            </div>
 
             <button type="submit">Register</button>
 
@@ -58,12 +67,16 @@
 
         const username = form.username.value;
         const email = form.email.value;
-        const name = form.name.value;
         const password = form.password.value;
         const confirmPassword = form.confirmPassword.value;
 
+        const categories = Array.from(
+            document.querySelectorAll('input[name="categories"]:checked')
+        ).map(cb => cb.value);
+
         const message = document.getElementById("registerMessage");
 
+        // 🔥 basic validation
         if (password !== confirmPassword) {
             message.textContent = "Passwords do not match.";
             message.style.color = "red";
@@ -79,9 +92,8 @@
                 body: JSON.stringify({
                     username,
                     email,
-                    name,
                     password,
-                    confirmPassword
+                    categories
                 })
             });
 
@@ -92,8 +104,9 @@
             message.textContent = "Account created successfully!";
             message.style.color = "green";
 
+            // optional redirect
             setTimeout(() => {
-                window.location.href = "/login";
+                window.location.href = "/login.html";
             }, 1500);
 
         } catch (err) {
@@ -103,7 +116,6 @@
         }
     });
 </script>
-
 
 </body>
 </html>

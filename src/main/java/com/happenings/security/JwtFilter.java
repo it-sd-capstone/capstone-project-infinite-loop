@@ -24,8 +24,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
-    String path = request.getRequestURI();
-    return path.equals("/register") || path.equals("/login");
+    return request.getRequestURI().startsWith("/api/auth/");
   }
 
   @Override
@@ -33,6 +32,11 @@ public class JwtFilter extends OncePerRequestFilter {
                                   HttpServletResponse res,
                                   FilterChain chain)
           throws ServletException, IOException {
+
+    if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+      chain.doFilter(req, res);
+      return;
+    }
 
     String authHeader = req.getHeader("Authorization");
 
@@ -44,19 +48,17 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String email = jwtUtil.extractUsername(token);
 
-        var optionalUser = userService.findByEmail(email);
+//        var user = userService.getByEmail(email);
+        var user = userService.getByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (optionalUser.isPresent()) {
-          var user = optionalUser.get();
+        var auth = new UsernamePasswordAuthenticationToken(
+                user, null, null
+        );
 
-          var auth = new UsernamePasswordAuthenticationToken(
-                  user, null, null
-          );
+        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
 
-          auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-
-          SecurityContextHolder.getContext().setAuthentication(auth);
-        }
+        SecurityContextHolder.getContext().setAuthentication(auth);
       }
     }
 

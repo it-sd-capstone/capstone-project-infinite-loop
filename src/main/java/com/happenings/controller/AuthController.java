@@ -25,9 +25,9 @@ public class AuthController {
     this.jwtUtil = jwtUtil;
   }
 
-  // REGISTER
+  // REGISTER USER
   @PostMapping("/register")
-  public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
+  public ResponseEntity<?> registerUser(@RequestBody RegisterRequest req) {
 
     User user = new User();
     user.setUsername(req.getUsername());
@@ -35,17 +35,17 @@ public class AuthController {
     user.setPassword(req.getPassword());
     user.setName(req.getName());
 
-    User created = userService.register(user);
+    User created = userService.registerUser(user);
     UserResponse dto = UserMapper.toResponse(created);
 
     return ResponseEntity.ok(dto);
   }
 
-  // LOGIN
+  // LOGIN USER
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody LoginRequest req) {
+  public ResponseEntity<?> loginUser(@RequestBody LoginRequest req) {
 
-    User user = userService.login(req.getEmail(), req.getPassword());
+    User user = userService.loginUser(req.getEmail(), req.getPassword());
 
     if (user == null) {
       return ResponseEntity.status(401).body("Invalid credentials");

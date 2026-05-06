@@ -18,26 +18,25 @@ public class UserService {
     this.passwordEncoder = passwordEncoder;
   }
 
-  // GET BY ID
-  public User getById(Integer id) {
+  // FIND BY ID
+  public User findById(Integer id) {
     return repo.findById(id)
             .orElseThrow(() -> new RuntimeException("User not found"));
   }
 
-  // GET BY EMAIL
-  public Optional<User> getByEmail(String email) {
+  // FIND BY EMAIL
+  public Optional<User> findByEmail(String email) {
     return repo.findByEmail(email);
   }
 
   // REGISTER USER
-  public User register(User user) {
+  public User registerUser(User user) {
 
     if (user.getEmail() == null || user.getPassword() == null ||
             user.getUsername() == null || user.getName() == null) {
       throw new RuntimeException("Missing required fields");
     }
 
-    // Duplicate checks using existsBy
     if (repo.existsByEmail(user.getEmail())) {
       throw new RuntimeException("Email already in use");
     }
@@ -46,10 +45,8 @@ public class UserService {
       throw new RuntimeException("Username already in use");
     }
 
-    // Encode password
     user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-    // Default role
     if (user.getRole() == null) {
       user.setRole("USER");
     }
@@ -58,7 +55,7 @@ public class UserService {
   }
 
   // LOGIN USER
-  public User login(String email, String rawPassword) {
+  public User loginUser(String email, String rawPassword) {
     Optional<User> optionalUser = repo.findByEmail(email);
 
     if (optionalUser.isEmpty()) {
@@ -79,7 +76,6 @@ public class UserService {
     User existing = repo.findById(id)
             .orElseThrow(() -> new RuntimeException("User not found"));
 
-    // Update allowed fields
     if (updated.getName() != null) {
       existing.setName(updated.getName());
     }
@@ -92,7 +88,6 @@ public class UserService {
       existing.setEmail(updated.getEmail());
     }
 
-    // If password is being changed
     if (updated.getPassword() != null && !updated.getPassword().isBlank()) {
       existing.setPassword(passwordEncoder.encode(updated.getPassword()));
     }

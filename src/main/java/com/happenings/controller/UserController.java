@@ -19,17 +19,17 @@ public class UserController {
     this.userService = userService;
   }
 
-  // GET USER BY ID
+  // FIND USER BY ID
   @GetMapping("/{id}")
-  public ResponseEntity<?> getUser(@PathVariable Integer id) {
-    User user = userService.getById(id);
+  public ResponseEntity<?> findById(@PathVariable Integer id) {
+    User user = userService.findById(id);
     UserResponse dto = UserMapper.toResponse(user);
     return ResponseEntity.ok(dto);
   }
 
   // UPDATE PROFILE
   @PutMapping("/{id}")
-  public ResponseEntity<?> updateUser(
+  public ResponseEntity<?> updateProfile(
           @PathVariable Integer id,
           @RequestBody UserUpdateRequest req) {
 

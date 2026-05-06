@@ -26,7 +26,9 @@ public class SecurityConfigLocal {
 
     http
             .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .anyRequest().authenticated())
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

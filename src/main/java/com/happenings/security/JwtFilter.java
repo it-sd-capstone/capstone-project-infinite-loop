@@ -43,7 +43,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String email = jwtUtil.extractUsername(token);
 
-        var user = userService.getByEmail(email);
+//        var user = userService.getByEmail(email);
+        var user = userService.getByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         var auth = new UsernamePasswordAuthenticationToken(
                 user, null, null

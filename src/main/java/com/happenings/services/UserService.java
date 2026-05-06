@@ -58,14 +58,35 @@ public class UserService {
   }
 
   // LOGIN USER
-  public User login(String email, String rawPassword) {
-    Optional<User> optionalUser = repo.findByEmail(email);
+//  public User login(String email, String rawPassword) {
+//    Optional<User> optionalUser = repo.findByEmail(email);
+//
+//    if (optionalUser.isEmpty()) {
+//      return null;
+//    }
+//
+//    User user = optionalUser.get();
+//
+//    if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+//      return null;
+//    }
+//
+//    return user;
+//  }
+  public User loginByUsername(String username, String rawPassword) {
+
+    Optional<User> optionalUser = repo.findByUsername(username);
 
     if (optionalUser.isEmpty()) {
       return null;
     }
 
     User user = optionalUser.get();
+
+    System.out.println("LOGIN ATTEMPT: " + username);
+    System.out.println("DB USER: " + user.getUsername());
+    System.out.println("DB PASSWORD HASH: " + user.getPassword());
+    System.out.println("PASSWORD MATCH: " + passwordEncoder.matches(rawPassword, user.getPassword()));
 
     if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
       return null;

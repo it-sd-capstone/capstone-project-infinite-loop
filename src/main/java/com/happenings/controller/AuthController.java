@@ -7,6 +7,7 @@ import com.happenings.entity.User;
 import com.happenings.mapper.UserMapper;
 import com.happenings.security.JwtUtil;
 import com.happenings.services.UserService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,15 @@ public class AuthController {
     this.userService = userService;
     this.jwtUtil = jwtUtil;
   }
-
+  @GetMapping("/api/test")
+  public String test() {
+    System.out.println("🔥 TEST ENDPOINT HIT");
+    return "OK";
+  }
+  @GetMapping("/ping")
+  public ResponseEntity<String> ping() {
+    return ResponseEntity.ok("OK");
+  }
   // REGISTER
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
@@ -40,18 +49,22 @@ public class AuthController {
 
     return ResponseEntity.ok(dto);
   }
-
+  @PostConstruct
+  public void init() {
+    System.out.println("🔥 AUTH CONTROLLER REGISTERED");
+  }
   // LOGIN
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-
-    User user = userService.login(req.getEmail(), req.getPassword());
+    System.out.println("LOGIN CONTROLLER HIT");
+//    User user = userService.login(req.getEmail(), req.getPassword());
+    User user = userService.loginByUsername(req.getUsername(), req.getPassword());
 
     if (user == null) {
       return ResponseEntity.status(401).body("Invalid credentials");
     }
 
-    String token = jwtUtil.generateToken(req.getEmail());
+    String token = jwtUtil.generateToken(user.getUsername());
     UserResponse dto = UserMapper.toResponse(user);
 
     return ResponseEntity.ok(Map.of(

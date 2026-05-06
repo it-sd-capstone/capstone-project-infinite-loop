@@ -33,13 +33,7 @@
 
             <div class="categories">
                 <p>Select your categories:</p>
-
-                <label><input type="checkbox" name="categories" value="music"> Music & Art</label>
-                <label><input type="checkbox" name="categories" value="sports"> Sports</label>
-                <label><input type="checkbox" name="categories" value="food"> Food & Drink</label>
-                <label><input type="checkbox" name="categories" value="outdoor"> Outdoor</label>
-                <label><input type="checkbox" name="categories" value="technology"> Technology</label>
-                <label><input type="checkbox" name="categories" value="community"> Community</label>
+                <div id="categoryList"></div>
             </div>
 
             <button type="submit">Register</button>
@@ -60,6 +54,34 @@
 <script>
     // const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/auth/register";
     const API_URL = "http://localhost:8080/api/auth/register";
+
+    //Provides list of categories directly from database
+    async function loadCategories() {
+        try {
+            const res = await fetch("http://localhost:8080/api/categories");
+            const categories = await res.json();
+
+            const container = document.getElementById("categoryList");
+            container.innerHTML = "";
+
+            categories.forEach(cat => {
+                const label = document.createElement("label");
+
+                label.innerHTML = `
+                    <input type="checkbox" name="categories" value="${cat.categoryName}">
+                    ${cat.categoryName}
+                `;
+
+                container.appendChild(label);
+            });
+
+        } catch (err) {
+            console.error("Failed to load categories:", err);
+        }
+    }
+
+    //CALL ON PAGE LOAD
+    loadCategories();
 
     document.getElementById("registerForm").addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -107,7 +129,7 @@
 
             // optional redirect
             setTimeout(() => {
-                window.location.href = "/login.html";
+                window.location.href = "/login";
             }, 1500);
 
         } catch (err) {

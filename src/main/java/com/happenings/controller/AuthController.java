@@ -25,15 +25,7 @@ public class AuthController {
     this.userService = userService;
     this.jwtUtil = jwtUtil;
   }
-  @GetMapping("/api/test")
-  public String test() {
-    System.out.println("🔥 TEST ENDPOINT HIT");
-    return "OK";
-  }
-  @GetMapping("/ping")
-  public ResponseEntity<String> ping() {
-    return ResponseEntity.ok("OK");
-  }
+
   // REGISTER
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
@@ -42,22 +34,16 @@ public class AuthController {
     user.setUsername(req.getUsername());
     user.setEmail(req.getEmail());
     user.setPassword(req.getPassword());
-    user.setName(req.getName());
 
-    User created = userService.register(user);
-    UserResponse dto = UserMapper.toResponse(created);
+    User created = userService.register(user, req.getCategories());
 
-    return ResponseEntity.ok(dto);
+    return ResponseEntity.ok(UserMapper.toResponse(created));
   }
-  @PostConstruct
-  public void init() {
-    System.out.println("🔥 AUTH CONTROLLER REGISTERED");
-  }
+
   // LOGIN
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody LoginRequest req) {
     System.out.println("LOGIN CONTROLLER HIT");
-//    User user = userService.login(req.getEmail(), req.getPassword());
     User user = userService.loginByUsername(req.getUsername(), req.getPassword());
 
     if (user == null) {

@@ -5,6 +5,7 @@ import com.happenings.repository.UserCategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserCategoryService {
@@ -31,7 +32,16 @@ public class UserCategoryService {
 
   // GET BY USER ID
   public List<UserCategory> getByUserId(Integer userId) {
-    return repo.findByUserId(userId);
+    return repo.findByUser_Id(userId);
+  }
+
+  // GET Category names by user id
+  public List<String> getCategoryNamesByUserId(Integer userId) {
+    return repo.findByUser_Id(userId).stream()
+            .map(uc -> uc.getCategory())
+            .filter(Objects::nonNull)
+            .map(category -> category.getCategoryName())
+            .toList();
   }
 
   // GET ALL

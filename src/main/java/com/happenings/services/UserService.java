@@ -1,48 +1,59 @@
 package com.happenings.services;
 
+import com.happenings.entity.Category;
 import com.happenings.entity.User;
+import com.happenings.entity.UserCategory;
+import com.happenings.repository.CategoryRepository;
+import com.happenings.repository.UserCategoryRepository;
 import com.happenings.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
-  private final UserRepository repo;
+  private final UserRepository userRepository;
+  private final CategoryRepository categoryRepository;
+  private final UserCategoryRepository userCategoryRepository;
   private final PasswordEncoder passwordEncoder;
 
-  public UserService(UserRepository repo, PasswordEncoder passwordEncoder) {
-    this.repo = repo;
+  public UserService(UserRepository userRepository,
+                     CategoryRepository categoryRepository,
+                     UserCategoryRepository userCategoryRepository,
+                     PasswordEncoder passwordEncoder) {
+    this.userRepository = userRepository;
+    this.categoryRepository = categoryRepository;
+    this.userCategoryRepository = userCategoryRepository;
     this.passwordEncoder = passwordEncoder;
   }
 
-  // GET BY ID
-  public User getById(Integer id) {
-    return repo.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-  }
+  // ------------------------------------------------------------
+// REGISTER USER (categoryId optional)
+// ------------------------------------------------------------
+  public User registerUser(User user, String confirmPassword) {
 
-  // GET BY EMAIL
-  public Optional<User> getByEmail(String email) {
-    return repo.findByEmail(email);
-  }
-
-  // REGISTER USER
-  public User register(User user) {
-
-    if (user.getEmail() == null || user.getPassword() == null ||
-            user.getUsername() == null || user.getName() == null) {
+    // Required fields
+    if (user.getEmail() == null ||
+            user.getPassword() == null ||
+            user.getUsername() == null ||
+            user.getName() == null) {
       throw new RuntimeException("Missing required fields");
     }
 
-    // Duplicate checks using existsBy
-    if (repo.existsByEmail(user.getEmail())) {
+    // Password match check
+    if (!user.getPassword().equals(confirmPassword)) {
+      throw new RuntimeException("Passwords do not match");
+    }
+
+    // Duplicate checks
+    if (userRepository.existsByEmail(user.getEmail())) {
       throw new RuntimeException("Email already in use");
     }
 
-    if (repo.existsByUsername(user.getUsername())) {
+    if (userRepository.existsByUsername(user.getUsername())) {
       throw new RuntimeException("Username already in use");
     }
 
@@ -54,49 +65,65 @@ public class UserService {
       user.setRole("USER");
     }
 
-    return repo.save(user);
+    // Save user
+    User savedUser = userRepository.save(user);
+
+    // CategoryId is OPTIONAL now — do nothing if null or empty
+    return savedUser;
   }
 
+
+  // ------------------------------------------------------------
   // LOGIN USER
-  public User login(String email, String rawPassword) {
-    Optional<User> optionalUser = repo.findByEmail(email);
+  // ------------------------------------------------------------
+  public User loginUser(String email, String rawPassword) {
+
+    Optional<User> optionalUser = userRepository.findByEmail(email);
 
     if (optionalUser.isEmpty()) {
-      return null;
+      throw new RuntimeException("Invalid credentials");
     }
 
     User user = optionalUser.get();
 
     if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-      return null;
+      throw new RuntimeException("Invalid credentials");
     }
 
     return user;
   }
 
+  // ------------------------------------------------------------
+  // FIND BY EMAIL
+  // ------------------------------------------------------------
+  public Optional<User> findByEmail(String email) {
+    return userRepository.findByEmail(email);
+  }
+
+  // ------------------------------------------------------------
+  // FIND BY ID
+  // ------------------------------------------------------------
+  public User findById(Integer id) {
+    return userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+  }
+
+  // ------------------------------------------------------------
   // UPDATE PROFILE
+  // ------------------------------------------------------------
   public User updateProfile(Integer id, User updated) {
-    User existing = repo.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
 
-    // Update allowed fields
-    if (updated.getName() != null) {
-      existing.setName(updated.getName());
-    }
+    User existing = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
-    if (updated.getUsername() != null) {
-      existing.setUsername(updated.getUsername());
-    }
+    existing.setUsername(updated.getUsername());
+    existing.setEmail(updated.getEmail());
+    existing.setName(updated.getName());
 
-    if (updated.getEmail() != null) {
-      existing.setEmail(updated.getEmail());
-    }
-
-    // If password is being changed
-    if (updated.getPassword() != null && !updated.getPassword().isBlank()) {
+    if (updated.getPassword() != null && !updated.getPassword().isEmpty()) {
       existing.setPassword(passwordEncoder.encode(updated.getPassword()));
     }
 
-    return repo.save(existing);
+    return userRepository.save(existing);
   }
 }

@@ -5,58 +5,37 @@ import com.happenings.dto.RegisterRequest;
 import com.happenings.dto.UserResponse;
 import com.happenings.entity.User;
 import com.happenings.mapper.UserMapper;
-import com.happenings.security.JwtUtil;
 import com.happenings.services.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
-@RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
+@RequestMapping("//api/auth")
 public class AuthController {
 
   private final UserService userService;
-  private final JwtUtil jwtUtil;
+  private final UserMapper userMapper;
 
-  public AuthController(UserService userService, JwtUtil jwtUtil) {
+  public AuthController(UserService userService, UserMapper userMapper) {
     this.userService = userService;
-    this.jwtUtil = jwtUtil;
+    this.userMapper = userMapper;
   }
 
-  // REGISTER
   @PostMapping("/register")
-  public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
+  public UserResponse register(@RequestBody RegisterRequest request) {
 
-    User user = new User();
-    user.setUsername(req.getUsername());
-    user.setEmail(req.getEmail());
-    user.setPassword(req.getPassword());
-    user.setName(req.getName());
+    User user = userMapper.toEntity(request);
 
-    User created = userService.register(user);
-    UserResponse dto = UserMapper.toResponse(created);
+    User saved = userService.registerUser(
+            user,
+            request.getConfirmPassword()
+    );
 
-    return ResponseEntity.ok(dto);
+    return userMapper.toResponse(saved);
   }
 
-  // LOGIN
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-
-    User user = userService.login(req.getEmail(), req.getPassword());
-
-    if (user == null) {
-      return ResponseEntity.status(401).body("Invalid credentials");
-    }
-
-    String token = jwtUtil.generateToken(req.getEmail());
-    UserResponse dto = UserMapper.toResponse(user);
-
-    return ResponseEntity.ok(Map.of(
-            "token", token,
-            "user", dto
-    ));
+  public UserResponse login(@RequestBody LoginRequest request) {
+    User user = userService.loginUser(request.getEmail(), request.getPassword());
+    return userMapper.toResponse(user);
   }
 }

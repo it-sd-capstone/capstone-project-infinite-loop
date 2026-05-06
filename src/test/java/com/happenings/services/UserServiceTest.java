@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +30,7 @@ class UserServiceTest {
 
         when(repo.findById(1)).thenReturn(Optional.of(user));
 
-        User result = userService.getById(1);
+        User result = userService.findById(1);
 
         assertNotNull(result);
         assertEquals(1, result.getId());
@@ -40,7 +41,7 @@ class UserServiceTest {
         when(repo.findById(1)).thenReturn(Optional.empty());
 
         Exception ex = assertThrows(RuntimeException.class,
-                () -> userService.getById(1));
+                () -> userService.findById(1));
 
         assertEquals("User not found", ex.getMessage());
     }
@@ -49,14 +50,22 @@ class UserServiceTest {
     void register_shouldSaveUser() {
         User user = new User();
         user.setEmail("test@email.com");
+        user.setUsername("testuser");
+        user.setPassword("Password123!");
 
+        when(repo.existsByEmail(user.getEmail())).thenReturn(false);
+        when(repo.existsByUsername(user.getUsername())).thenReturn(false);
         when(repo.save(user)).thenReturn(user);
 
-        User saved = userService.register(user);
+        User saved = userService.registerUser(
+                user,
+                "Password123!"      // confirmPassword
+        );
 
         assertEquals("test@email.com", saved.getEmail());
         verify(repo).save(user);
     }
+
 
     @Test
     void getByEmail_shouldReturnOptional() {
@@ -66,7 +75,7 @@ class UserServiceTest {
         when(repo.findByEmail("test@email.com"))
                 .thenReturn(Optional.of(user));
 
-        Optional<User> result = userService.getByEmail("test@email.com");
+        Optional<User> result = userService.findByEmail("test@email.com");
 
         assertTrue(result.isPresent());
     }

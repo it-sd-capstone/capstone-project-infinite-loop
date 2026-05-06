@@ -28,46 +28,26 @@
 
 <main>
 
-    <!-- SEARCH + SORT -->
     <div class="events-toolbar">
-
         <div class="search-bar">
             <span>🔍</span>
             <input type="text" id="eventSearch"
                    placeholder="Search for events..."
                    oninput="handleSearch()">
         </div>
-
-        <div class="sort-dropdown">
-            <button class="sort-btn" onclick="toggleSortMenu()">
-                <span id="sortLabel">Default sorting</span>
-                <span>⌄</span>
-            </button>
-
-            <div class="sort-menu" id="sortMenu">
-                <div class="sort-option" onclick="setSort('default')">Default</div>
-                <div class="sort-option" onclick="setSort('recent')">Recent</div>
-                <div class="sort-option" onclick="setSort('oldest')">Oldest</div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- FILTERS -->
     <div class="category-filters">
         <button class="cat-filter active" onclick="setCategory('all', this)">All</button>
         <button class="cat-filter music" onclick="setCategory('music', this)">Music & Art</button>
         <button class="cat-filter sports" onclick="setCategory('sports', this)">Sports</button>
         <button class="cat-filter food" onclick="setCategory('food', this)">Food & Drink</button>
-        <button class="cat-filter outdoor" onclick="setCategory('outdoor', this)">Outdoor</button>
         <button class="cat-filter technology" onclick="setCategory('technology', this)">Technology</button>
         <button class="cat-filter community" onclick="setCategory('community', this)">Community</button>
     </div>
 
-    <!-- EVENTS -->
     <div class="allevents-grid" id="eventsGrid"></div>
 
-    <!-- PAGINATION -->
     <div class="pagination-bar">
         <div class="pagination" id="pagination"></div>
     </div>
@@ -81,46 +61,126 @@
     let currentCategory = 'all';
     let currentSort = 'default';
     let allEvents = [];
+    let savedEventIds = new Set();
 
-    const API_URL =
-        "https://capstone-project-infinite-loop-f0nr.onrender.com/api/events";
+    const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/events";
 
     // =========================
-    // FETCH EVENTS
+    // LOAD SAVED IDS
     // =========================
-    async function loadEvents() {
-        try {
-            const response = await fetch(API_URL);
+    async function loadSavedEventIds() {
+        const userId = localStorage.getItem("userId");
 
-            if (!response.ok) {
-                throw new Error("HTTP error " + response.status);
-            }
+        if (!userId) return;
 
-            const data = await response.json();
+        const res = await fetch(
+            `https://capstone-project-infinite-loop-f0nr.onrender.com/api/saved-events/user/${userId}`
+        );
 
-            allEvents = data.map(e => ({
-                title: e.title || "No Title",
-                description: e.description || "",
-                category: mapCategory(e.categoryId),
-                categoryLabel: mapCategoryLabel(e.categoryId),
-                image: mapCategoryImage(e.categoryId),
-                date: formatDate(e.eventDatetime),
-                location: e.location || "TBD",
-                timestamp: new Date(e.eventDatetime).getTime()
-            }));
+        const data = await res.json();
 
-            filterEvents();
-
-        } catch (error) {
-            console.error("Failed to load events:", error);
-
-            document.getElementById('eventsGrid').innerHTML =
-                "<p style='color:white'>Failed to load events from server.</p>";
-        }
+        savedEventIds = new Set(data.map(e => e.eventId));
     }
 
     // =========================
-    // CATEGORY MAPPING
+    // LOAD EVENTS
+    // =========================
+    async function loadEvents() {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        allEvents = data.map(e => ({
+            eventId: e.eventId,
+            title: e.title,
+            description: e.description,
+            category: mapCategory(e.categoryId),
+            categoryLabel: mapCategoryLabel(e.categoryId),
+            image: mapCategoryImage(e.categoryId),
+            date: new Date(e.eventDatetime).toDateString(),
+            location: e.location || "TBD",
+            timestamp: new Date(e.eventDatetime).getTime()
+        }));
+
+        await loadSavedEventIds();
+
+        filterEvents();
+    }
+
+    // =========================
+    // RENDER
+    // =========================
+    function renderEvents(events) {
+        const grid = document.getElementById('eventsGrid');
+        grid.innerHTML = '';
+
+        events.forEach(event => {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            card.innerHTML =
+                '<div class="card-header">' +
+                '<a class="event-name">' + event.title + '</a>' +
+                '<p class="event-type"><span class="badge ' + event.category + '">' +
+                event.categoryLabel + '</span></p>' +
+                '</div>' +
+
+                '<div class="image-container">' +
+                '<img src="' + event.image + '">' +
+
+                '<button class="card-save-btn" onclick="toggleSave(event, ' + event.eventId + ')">' +
+                (savedEventIds.has(event.eventId) ? '❤️' : '🤍') +
+                '</button>' +
+
+                '</div>' +
+
+                '<div class="card-details">' +
+                '<p>' + event.description + '</p>' +
+                '<p>📅 ' + event.date + '</p>' +
+                '<p>📍 ' + event.location + '</p>' +
+                '</div>';
+
+            grid.appendChild(card);
+        });
+    }
+
+    // =========================
+    // SAVE / UNSAVE
+    // =========================
+    async function toggleSave(e, eventId) {
+        e.stopPropagation();
+
+        const userId = localStorage.getItem("userId");
+
+        if (savedEventIds.has(eventId)) {
+            await fetch(
+                `https://capstone-project-infinite-loop-f0nr.onrender.com/api/saved-events?userId=${userId}&eventId=${eventId}`,
+                { method: "DELETE" }
+            );
+            savedEventIds.delete(eventId);
+        } else {
+            await fetch(
+                `https://capstone-project-infinite-loop-f0nr.onrender.com/api/saved-events`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: parseInt(userId), eventId })
+                }
+            );
+            savedEventIds.add(eventId);
+        }
+
+        filterEvents();
+    }
+
+    // =========================
+    // FILTER
+    // =========================
+    function filterEvents() {
+        renderEvents(allEvents);
+    }
+
+    // =========================
+    // MAPPERS
     // =========================
     function mapCategory(id) {
         switch (id) {
@@ -154,215 +214,6 @@
             default: return "/images/login-bg.jpg";
         }
     }
-
-    function formatDate(dateStr) {
-        return new Date(dateStr).toDateString();
-    }
-
-    // =========================
-    // FILTER + SORT
-    // =========================
-    function setCategory(cat, el) {
-        currentCategory = cat;
-        currentPage = 1;
-
-        document.querySelectorAll('.cat-filter')
-            .forEach(b => b.classList.remove('active'));
-
-        el.classList.add('active');
-
-        filterEvents();
-    }
-
-    function setSort(sort) {
-        currentSort = sort;
-        currentPage = 1;
-
-        const labels = {
-            default: 'Default sorting',
-            recent: 'Recent',
-            oldest: 'Oldest'
-        };
-
-        document.getElementById('sortLabel').textContent = labels[sort];
-        document.getElementById('sortMenu').classList.remove('open');
-
-        filterEvents();
-    }
-
-    function toggleSortMenu() {
-        document.getElementById('sortMenu')
-            .classList.toggle('open');
-    }
-
-    function handleSearch() {
-        currentPage = 1;
-        filterEvents();
-    }
-
-    function filterEvents() {
-        const query = document.getElementById('eventSearch')
-            .value.toLowerCase();
-
-        let filtered = allEvents.filter(e => {
-            const matchesCategory =
-                currentCategory === 'all' || e.category === currentCategory;
-
-            const matchesSearch =
-                e.title.toLowerCase().includes(query) ||
-                e.categoryLabel.toLowerCase().includes(query);
-
-            return matchesCategory && matchesSearch;
-        });
-
-        if (currentSort === 'recent') {
-            filtered.sort((a, b) => b.timestamp - a.timestamp);
-        }
-
-        if (currentSort === 'oldest') {
-            filtered.sort((a, b) => a.timestamp - b.timestamp);
-        }
-
-        renderEvents(filtered);
-    }
-
-    // =========================
-    // RENDER
-    // =========================
-    function renderEvents(events) {
-        const grid = document.getElementById('eventsGrid');
-        const pagination = document.getElementById('pagination');
-
-        const totalPages = Math.ceil(events.length / CARDS_PER_PAGE);
-
-        const start = (currentPage - 1) * CARDS_PER_PAGE;
-        const pageEvents = events.slice(start, start + CARDS_PER_PAGE);
-
-        grid.innerHTML = '';
-
-        pageEvents.forEach(event => {
-            const card = document.createElement('div');
-            card.className = 'card';
-
-            const eventData = {
-                title: event.title,
-                description: event.description,
-                category: event.category,
-                categoryLabel: event.categoryLabel,
-                image: event.image,
-                date: event.date,
-                location: event.location
-            };
-
-            card.addEventListener('click', function(e) {
-                if (e.target.classList.contains('card-save-btn')) return;
-                Modal.open(eventData);
-            });
-
-            card.innerHTML =
-                '<div class="card-header">' +
-                '<a class="event-name">' + event.title + '</a>' +
-                '<p class="event-type"><span class="badge ' + event.category + '">' + event.categoryLabel + '</span></p>' +
-                '</div>' +
-                '<div class="image-container">' +
-                '<img src="' + event.image + '">' +
-                '<button class="card-save-btn" onclick="toggleSave(this)">🤍</button>' +
-                '</div>' +
-                '<div class="card-details">' +
-                '<p class="desc">' + event.description + '</p>' +
-                '<p>📅 ' + event.date + '</p>' +
-                '<p>📍 ' + event.location + '</p>' +
-                '</div>';
-
-            grid.appendChild(card);
-        });
-
-        // pagination
-        pagination.innerHTML = '';
-
-        for (let i = 1; i <= totalPages; i++) {
-            const btn = document.createElement('button');
-            btn.textContent = i;
-
-            btn.className =
-                'page-btn' + (i === currentPage ? ' active' : '');
-
-            btn.onclick = () => {
-                currentPage = i;
-                filterEvents();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            };
-
-            pagination.appendChild(btn);
-        }
-    }
-
-    function toggleSave(btn) {
-        btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
-    }
-
-    // =========================
-    // CLOSE SORT MENU
-    // =========================
-    document.addEventListener('click', e => {
-        if (!e.target.closest('.sort-dropdown')) {
-            document.getElementById('sortMenu')
-                .classList.remove('open');
-        }
-    });
-
-    const Modal = (() => {
-        function init() {
-            const modal = document.createElement('div');
-            modal.id = 'cardModal';
-            modal.className = 'card-modal-overlay';
-            modal.innerHTML =
-                '<div class="card-modal">' +
-                '<div class="card-modal-header">' +
-                '<h2 id="modalTitle"></h2>' +
-                '<p class="event-type"><span id="modalBadge"></span></p>' +
-                '</div>' +
-                '<div class="card-modal-image">' +
-                '<img id="modalImage" src="" alt="">' +
-                '<button class="card-save-btn" id="modalSaveBtn" onclick="toggleSave(this)">🤍</button>' +
-                '</div>' +
-                '<div class="card-modal-body">' +
-                '<p id="modalDesc"></p>' +
-                '<div class="card-modal-meta">' +
-                '<p id="modalDate"></p>' +
-                '<p id="modalLocation"></p>' +
-                '</div>' +
-                '</div>' +
-                '</div>';
-            document.body.appendChild(modal);
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) Modal.close();
-            });
-        }
-
-        function open(event) {
-            document.getElementById('modalTitle').textContent    = event.title || '';
-            document.getElementById('modalDesc').textContent     = event.description || '';
-            document.getElementById('modalDate').textContent     = '📅 ' + (event.date || '');
-            document.getElementById('modalLocation').textContent = '📍 ' + (event.location || '');
-            document.getElementById('modalImage').src            = event.image || '';
-            document.getElementById('modalImage').alt            = event.title || '';
-            const badge = document.getElementById('modalBadge');
-            badge.textContent = event.categoryLabel || '';
-            badge.className   = 'badge ' + (event.category || '');
-            document.getElementById('modalSaveBtn').textContent = '🤍';
-            document.getElementById('cardModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function close() {
-            document.getElementById('cardModal').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
-        return { open, close };
-    })();
 
     document.addEventListener('DOMContentLoaded', loadEvents);
 </script>

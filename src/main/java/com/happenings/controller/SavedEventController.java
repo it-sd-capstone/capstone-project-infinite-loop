@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/saved")
+@RequestMapping("/api/saved-events") // ✅ consistent naming
 @CrossOrigin(origins = "*")
 public class SavedEventController {
 
@@ -19,16 +19,19 @@ public class SavedEventController {
     this.service = service;
   }
 
-  // SAVE EVENT
+  // ✅ SAVE
   @PostMapping
   public ResponseEntity<SavedEventResponse> save(@RequestBody SavedEventRequest request) {
     return ResponseEntity.ok(service.save(request));
   }
 
-  // DELETE
-  @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable Integer id) {
-    boolean deleted = service.deleteById(id);
+  // ✅ DELETE (FIXED)
+  @DeleteMapping
+  public ResponseEntity<String> delete(
+          @RequestParam Integer userId,
+          @RequestParam Integer eventId) {
+
+    boolean deleted = service.deleteByUserAndEvent(userId, eventId);
 
     if (!deleted) {
       return ResponseEntity.status(404).body("Not found");
@@ -37,7 +40,7 @@ public class SavedEventController {
     return ResponseEntity.ok("Deleted");
   }
 
-  // GET BY USER
+  // ✅ GET BY USER
   @GetMapping("/user/{userId}")
   public ResponseEntity<List<SavedEventResponse>> getByUser(@PathVariable Integer userId) {
     return ResponseEntity.ok(service.getByUserId(userId));

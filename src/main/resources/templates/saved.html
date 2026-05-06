@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8" />
@@ -39,8 +40,14 @@
 </main>
 
 <script>
-    const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/events/saved";
+    const userId = localStorage.getItem("userId");
 
+    const API_URL =
+        "https://capstone-project-infinite-loop-f0nr.onrender.com/api/saved-events/user/" + userId;
+
+    // =========================
+    // CATEGORY MAPPERS
+    // =========================
     function mapCategory(id) {
         switch (id) {
             case 1: return "music";
@@ -74,12 +81,17 @@
         }
     }
 
+    // =========================
+    // LOAD SAVED EVENTS
+    // =========================
     async function loadSavedEvents() {
         try {
+            if (!userId) {
+                alert("User not logged in");
+                return;
+            }
+
             const res = await fetch(API_URL);
-
-            if (!res.ok) throw new Error("Failed to load saved events");
-
             const data = await res.json();
 
             renderSaved(data);
@@ -91,6 +103,9 @@
         }
     }
 
+    // =========================
+    // RENDER CARDS
+    // =========================
     function renderSaved(events) {
         const grid = document.getElementById('savedGrid');
         grid.innerHTML = '';
@@ -105,13 +120,15 @@
             card.className = 'card';
 
             const eventData = {
-                title:         event.title || 'Untitled',
-                description:   event.description || '',
-                category:      event.category || mapCategory(event.categoryId),
-                categoryLabel: event.categoryLabel || mapCategoryLabel(event.categoryId),
-                image:         event.image || mapCategoryImage(event.categoryId),
-                date:          event.date || new Date(event.eventDatetime).toDateString(),
-                location:      event.location || 'TBD'
+                title: event.title,
+                description: event.description,
+                category: mapCategory(event.categoryId),
+                categoryLabel: mapCategoryLabel(event.categoryId),
+                image: mapCategoryImage(event.categoryId),
+                date: event.eventDatetime
+                    ? new Date(event.eventDatetime).toDateString()
+                    : "TBD",
+                location: event.location || "TBD"
             };
 
             card.addEventListener('click', function(e) {
@@ -121,15 +138,20 @@
 
             card.innerHTML =
                 '<div class="card-header">' +
-                '<a class="event-name">' + eventData.title + '</a>' +
-                '<p class="event-type"><span class="badge ' + eventData.category + '">' + eventData.categoryLabel + '</span></p>' +
+                '<a class="event-name">' + event.title + '</a>' +
+                '<p class="event-type">' +
+                '<span class="badge ' + eventData.category + '">' +
+                eventData.categoryLabel +
+                '</span></p>' +
                 '</div>' +
+
                 '<div class="image-container">' +
                 '<img src="' + eventData.image + '">' +
-                '<button class="card-save-btn" onclick="toggleSave(this)">❤️</button>' +
+                '<button class="card-save-btn" onclick="removeSaved(' + event.eventId + ')">❤️</button>' +
                 '</div>' +
+
                 '<div class="card-details">' +
-                '<p class="desc">' + eventData.description + '</p>' +
+                '<p class="desc">' + event.description + '</p>' +
                 '<p>📅 ' + eventData.date + '</p>' +
                 '<p>📍 ' + eventData.location + '</p>' +
                 '</div>';
@@ -138,10 +160,26 @@
         });
     }
 
-    function toggleSave(btn) {
-        btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
+    // =========================
+    // REMOVE SAVED EVENT (REAL BACKEND CALL)
+    // =========================
+    async function removeSaved(eventId) {
+        try {
+            await fetch(
+                `https://capstone-project-infinite-loop-f0nr.onrender.com/api/saved-events?userId=${userId}&eventId=${eventId}`,
+                { method: "DELETE" }
+            );
+
+            loadSavedEvents(); // refresh UI
+
+        } catch (err) {
+            console.error("Delete failed:", err);
+        }
     }
 
+    // =========================
+    // MODAL
+    // =========================
     const Modal = (() => {
         function init() {
             const modal = document.createElement('div');
@@ -155,7 +193,6 @@
                 '</div>' +
                 '<div class="card-modal-image">' +
                 '<img id="modalImage" src="" alt="">' +
-                '<button class="card-save-btn" id="modalSaveBtn" onclick="toggleSave(this)">❤️</button>' +
                 '</div>' +
                 '<div class="card-modal-body">' +
                 '<p id="modalDesc"></p>' +
@@ -165,23 +202,25 @@
                 '</div>' +
                 '</div>' +
                 '</div>';
+
             document.body.appendChild(modal);
+
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) Modal.close();
             });
         }
 
         function open(event) {
-            document.getElementById('modalTitle').textContent    = event.title || '';
-            document.getElementById('modalDesc').textContent     = event.description || '';
-            document.getElementById('modalDate').textContent     = '📅 ' + (event.date || '');
+            document.getElementById('modalTitle').textContent = event.title || '';
+            document.getElementById('modalDesc').textContent = event.description || '';
+            document.getElementById('modalDate').textContent = '📅 ' + (event.date || '');
             document.getElementById('modalLocation').textContent = '📍 ' + (event.location || '');
-            document.getElementById('modalImage').src            = event.image || '';
-            document.getElementById('modalImage').alt            = event.title || '';
+            document.getElementById('modalImage').src = event.image || '';
+
             const badge = document.getElementById('modalBadge');
             badge.textContent = event.categoryLabel || '';
-            badge.className   = 'badge ' + (event.category || '');
-            document.getElementById('modalSaveBtn').textContent = '❤️';
+            badge.className = 'badge ' + (event.category || '');
+
             document.getElementById('cardModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -192,9 +231,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', init);
+
         return { open, close };
     })();
 
+    // =========================
+    // INIT
+    // =========================
     document.addEventListener('DOMContentLoaded', loadSavedEvents);
 </script>
 

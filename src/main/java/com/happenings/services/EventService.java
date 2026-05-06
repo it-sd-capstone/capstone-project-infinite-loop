@@ -69,4 +69,9 @@ public class EventService {
   public List<Event> getEventsByUser(Integer userId) {
     return eventRepository.findByCreatedByUserId(userId);
   }
+
+  public Event getById(Integer id) {
+    return eventRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Event not found"));
+  }
 }

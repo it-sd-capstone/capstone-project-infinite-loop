@@ -18,4 +18,10 @@ public class LocationService {
   public List<Location> getAll() {
     return repo.findAll();
   }
+
+  // GET LOCATION BY ID
+  public Location getById(Integer id) {
+    return repo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Location not found"));
+  }
 }

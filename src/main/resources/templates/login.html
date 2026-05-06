@@ -59,8 +59,9 @@
 </main>
 
 <script>
-    const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/auth/login";
-
+    console.log("LOGIN SCRIPT LOADED");
+    // const API_URL = "https://capstone-project-infinite-loop-f0nr.onrender.com/api/auth/login";
+    const API_URL = "http://localhost:8080/api/auth/login";
     const form = document.getElementById("loginForm");
     const message = document.getElementById("loginMessage");
 
@@ -91,7 +92,9 @@
             const user = await response.json();
 
             // 🔥 STORE USER ID (CRITICAL FIX)
-            localStorage.setItem("userId", user.id);
+            // localStorage.setItem("userId", user.id);
+            localStorage.setItem("userId", user.user.id);
+            localStorage.setItem("token", user.token);
 
             message.style.color = "green";
             message.textContent = "Login successful!";

@@ -95,7 +95,7 @@ public class SavedEventService {
     res.setTitle(event.getTitle());
     res.setDescription(event.getDescription());
     res.setEventDatetime(event.getEventDatetime());
-    res.setLocationId(event.getLocationId());
+    res.setLocation(event.getLocation());
     res.setCategoryId(event.getCategoryId());
 
     return res;

@@ -1,6 +1,8 @@
 package com.happenings.services;
 
+import com.happenings.dto.EventRequest;
 import com.happenings.entity.Event;
+import com.happenings.entity.Location;
 import com.happenings.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +12,13 @@ import java.util.List;
 public class EventService {
 
   private final EventRepository eventRepository;
+  private final LocationService locationService;
 
-  public EventService(EventRepository eventRepository) {
+
+  public EventService(EventRepository eventRepository,
+                      LocationService locationService) {
     this.eventRepository = eventRepository;
+    this.locationService = locationService;
   }
 
   // GET ALL EVENTS
@@ -26,15 +32,27 @@ public class EventService {
   }
 
   // CREATE EVENT
-  public Event createEvent(Event event) {
+  public Event createEvent(EventRequest req) {
 
-    // optional validation
-    if (event.getTitle() == null || event.getTitle().isBlank()) {
-      throw new RuntimeException("Title is required");
-    }
+    Location location = locationService.findOrCreate(
+            req.getVenueName(),
+            req.getAddress(),
+            req.getCity(),
+            req.getState()
+    );
+
+    Event event = new Event();
+    event.setTitle(req.getTitle());
+    event.setDescription(req.getDescription());
+    event.setEventDatetime(req.getEventDatetime());
+    event.setCategoryId(req.getCategoryId());
+    event.setCreatedByUserId(req.getCreatedByUserId());
+
+    event.setLocation(location);
 
     return eventRepository.save(event);
   }
+
 
   // UPDATE EVENT
   public Event updateEvent(Integer id, Event updatedEvent) {
@@ -48,7 +66,7 @@ public class EventService {
     existing.setTitle(updatedEvent.getTitle());
     existing.setDescription(updatedEvent.getDescription());
     existing.setEventDatetime(updatedEvent.getEventDatetime());
-    existing.setLocationId(updatedEvent.getLocationId());
+    existing.setLocation(updatedEvent.getLocation());
     existing.setCategoryId(updatedEvent.getCategoryId());
 
     return eventRepository.save(existing);

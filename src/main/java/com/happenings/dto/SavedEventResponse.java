@@ -1,5 +1,7 @@
 package com.happenings.dto;
 
+import com.happenings.entity.Location;
+
 import java.time.LocalDateTime;
 
 public class SavedEventResponse {
@@ -8,11 +10,10 @@ public class SavedEventResponse {
     private Integer userId;
     private Integer eventId;
 
-    // 🔥 event data for frontend
     private String title;
     private String description;
     private LocalDateTime eventDatetime;
-    private Integer locationId;
+    private Location location;
     private Integer categoryId;
 
     // getters & setters
@@ -35,8 +36,8 @@ public class SavedEventResponse {
     public LocalDateTime getEventDatetime() { return eventDatetime; }
     public void setEventDatetime(LocalDateTime eventDatetime) { this.eventDatetime = eventDatetime; }
 
-    public Integer getLocationId() { return locationId; }
-    public void setLocationId(Integer locationId) { this.locationId = locationId; }
+    public Location getLocation() { return location;}
+    public void setLocation(Location location) { this.location = location;}
 
     public Integer getCategoryId() { return categoryId; }
     public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }

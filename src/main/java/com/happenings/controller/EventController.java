@@ -1,7 +1,11 @@
 package com.happenings.controller;
 
+import com.happenings.dto.EventRequest;
 import com.happenings.entity.Event;
+import com.happenings.entity.User;
+import com.happenings.security.JwtUtil;
 import com.happenings.services.EventService;
+import com.happenings.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +17,15 @@ import java.util.List;
 public class EventController {
 
   private final EventService eventService;
+  private final JwtUtil jwtUtil;
+  private final UserService userService;
 
-  public EventController(EventService eventService) {
+  public EventController(EventService eventService,
+                         JwtUtil jwtUtil,
+                         UserService userService ) {
     this.eventService = eventService;
+    this.jwtUtil = jwtUtil;
+    this.userService = userService;
   }
 
   // GET ALL EVENTS
@@ -39,9 +49,23 @@ public class EventController {
 
   // CREATE EVENT
   @PostMapping
-  public ResponseEntity<Event> createEvent(@RequestBody Event event) {
+  public ResponseEntity<Event> createEvent(
+          @RequestHeader("Authorization") String authHeader,
+          @RequestBody EventRequest req
+  ) {
+    String token = authHeader.substring(7);
 
-    Event created = eventService.createEvent(event);
+    // JWT contains email
+    String email = jwtUtil.extractUsername(token);
+
+    // Safe Optional handling
+    User user = userService.getByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    // attach logged-in user
+    req.setCreatedByUserId(user.getId());
+
+    Event created = eventService.createEvent(req);
 
     return ResponseEntity.ok(created);
   }

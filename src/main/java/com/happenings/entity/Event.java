@@ -21,7 +21,10 @@ public class Event {
   @Column(name = "event_datetime")
   private LocalDateTime eventDatetime;
 
-  private Integer locationId;
+  @ManyToOne
+  @JoinColumn(name = "location_id")
+  private Location location;
+
   private Integer categoryId;
   private Integer createdByUserId;
 }

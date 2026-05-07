@@ -27,7 +27,7 @@ public class InvitationService {
         User recipient = userService.getByEmail(recipientEmail)
                 .orElseThrow(() -> new RuntimeException("Recipient not found"));
 
-        Location location = locationService.getById(event.getLocationId());
+        Location location = locationService.getById(event.getLocation().getLocationId());
 
         String locationText =
                 location.getVenueName() + ", " +

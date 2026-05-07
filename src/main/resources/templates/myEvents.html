@@ -136,7 +136,16 @@
                 categoryLabel: mapCategoryLabel(event.categoryId),
                 image: mapCategoryImage(event.categoryId),
                 date: new Date(event.eventDatetime).toDateString(),
-                location: event.location || 'TBD'
+
+                location: event.location
+                    ? `${event.location.venueName}, ${event.location.city}, ${event.location.state}`
+                    : 'TBD',
+
+                fullLocation: event.location
+                    ? `${event.location.venueName}
+                       ${event.location.address}
+                       ${event.location.city}, ${event.location.state}`
+                    : 'TBD'
             };
 
             card.addEventListener('click', function(e) {
@@ -160,7 +169,13 @@
                 '<div class="card-details">' +
                 '<p class="desc">' + (event.description || '') + '</p>' +
                 '<p>📅 ' + new Date(event.eventDatetime).toDateString() + '</p>' +
-                '<p>📍 ' + (event.location || 'TBD') + '</p>' +
+                '<p>📍 ' +
+                (event.location
+                    ? event.location.venueName + ', ' +
+                    event.location.city + ', ' +
+                    event.location.state
+                    : 'TBD')
+                + '</p>' +
                 '</div>' +
 
                 '<div class="card-actions">' +
@@ -254,7 +269,8 @@
             document.getElementById('modalTitle').textContent = event.title || '';
             document.getElementById('modalDesc').textContent = event.description || '';
             document.getElementById('modalDate').textContent = '📅 ' + (event.date || '');
-            document.getElementById('modalLocation').textContent = '📍 ' + (event.location || '');
+            document.getElementById('modalLocation').textContent =
+                '📍 ' + (event.fullLocation || '');
             document.getElementById('modalImage').src = event.image || '';
 
             const badge = document.getElementById('modalBadge');

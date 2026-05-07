@@ -24,4 +24,22 @@ public class LocationService {
     return repo.findById(id)
             .orElseThrow(() -> new RuntimeException("Location not found"));
   }
+
+  // RETRIEVES LOCATION IF EXISTS OR CREATES NEW
+  public Location findOrCreate(String venueName, String address, String city, String state) {
+
+      return repo
+              .findByVenueNameAndAddressAndCityAndState(
+                      venueName, address, city, state
+              )
+              .orElseGet(() -> {
+                  Location loc = new Location();
+                  loc.setVenueName(venueName);
+                  loc.setAddress(address);
+                  loc.setCity(city);
+                  loc.setState(state);
+                  return repo.save(loc);
+              });
+  }
+
 }

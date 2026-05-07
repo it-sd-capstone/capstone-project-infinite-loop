@@ -13,12 +13,14 @@
 
 <header>
     <h1>Happenings</h1>
+
     <nav>
         <a href="/dashboard">Home</a>
         <a href="/allEvents">All Events</a>
         <a href="/recommendations" class="active">Recommended</a>
         <a href="/saved">Saved</a>
         <a href="/myEvents">My Events</a>
+
         <a href="/profile">
             <img src="/images/profileEmpty.png" class="profile-pic" />
         </a>
@@ -29,10 +31,8 @@
 
     <div class="home-banner">
         <h2>Recommended for You</h2>
-        <p>Events picked based on your interest categories.</p>
+        <p>Events picked based on your saved interests.</p>
     </div>
-
-    <div class="rec-tags" id="recTags"></div>
 
     <div class="section">
         <div class="allevents-grid" id="recGrid"></div>
@@ -41,187 +41,419 @@
 </main>
 
 <script>
-    // const API_URL = 'https://capstone-project-infinite-loop-f0nr.onrender.com/api/events';
-    const API_URL = "http://localhost:8080/api/events";
+
+    // =========================
+    // API URL
+    // =========================
+
+    // LOCAL
+    const API_BASE = "http://localhost:8080/api";
+
+    // RENDER
+    // const API_BASE = "https://capstone-project-infinite-loop-f0nr.onrender.com/api";
+
+
+    // =========================
+    // CATEGORY HELPERS
+    // =========================
 
     function mapCategory(id) {
+
         switch (id) {
-            case 1: return "music";
-            case 2: return "sports";
-            case 3: return "technology";
-            case 4: return "food";
-            case 5: return "community";
-            default: return "community";
+
+            case 1:
+                return "music";
+
+            case 2:
+                return "sports";
+
+            case 3:
+                return "technology";
+
+            case 4:
+                return "food";
+
+            case 5:
+                return "community";
+
+            default:
+                return "community";
         }
     }
 
     function mapCategoryLabel(id) {
+
         switch (id) {
-            case 1: return "Music & Art";
-            case 2: return "Sports";
-            case 3: return "Technology";
-            case 4: return "Food & Drink";
-            case 5: return "Community";
-            default: return "Community";
+
+            case 1:
+                return "Music & Art";
+
+            case 2:
+                return "Sports";
+
+            case 3:
+                return "Technology";
+
+            case 4:
+                return "Food & Drink";
+
+            case 5:
+                return "Community";
+
+            default:
+                return "Community";
         }
     }
 
     function mapCategoryImage(id) {
+
         switch (id) {
-            case 1: return "/images/musicCard.png";
-            case 2: return "/images/sportsCard.jpg";
-            case 3: return "/images/TechnologyCard.png";
-            case 4: return "/images/FoodDrinkCard.jpg";
-            case 5: return "/images/CommunityCard.png";
-            default: return "/images/login-bg.jpg";
+
+            case 1:
+                return "/images/musicCard.png";
+
+            case 2:
+                return "/images/sportsCard.jpg";
+
+            case 3:
+                return "/images/TechnologyCard.png";
+
+            case 4:
+                return "/images/FoodDrinkCard.jpg";
+
+            case 5:
+                return "/images/CommunityCard.png";
+
+            default:
+                return "/images/login-bg.jpg";
         }
     }
 
-    function categoryNameToId(name) {
-        switch (name) {
-            case "music":      return 1;
-            case "sports":     return 2;
-            case "technology": return 3;
-            case "food":       return 4;
-            case "community":  return 5;
-            default:           return 5;
-        }
-    }
 
-    function getUserCategories() {
-        try {
-            const saved = localStorage.getItem('happenings_categories');
-            return saved ? JSON.parse(saved) : [];
-        } catch {
-            return [];
-        }
-    }
+    // =========================
+    // LOAD RECOMMENDATIONS
+    // =========================
 
     async function loadRecommendations() {
-        const grid = document.getElementById('recGrid');
-        const tagsContainer = document.getElementById('recTags');
-        const userCategories = getUserCategories();
+
+        const grid = document.getElementById("recGrid");
+
+        grid.innerHTML = "<p style='color:#aaa'>Loading recommendations...</p>";
 
         try {
-            const response = await fetch(API_URL);
 
-            if (!response.ok) throw new Error('HTTP error ' + response.status);
+            const userId = localStorage.getItem("userId");
 
-            const data = await response.json();
+            if (!userId) {
 
-            const filtered = data.filter(e => {
-                const cat = mapCategory(e.categoryId);
-                return userCategories.includes(cat);
-            });
+                grid.innerHTML =
+                    "<p style='color:#aaa'>Please log in to view recommendations.</p>";
 
-            renderEvents(filtered);
+                return;
+            }
 
-        } catch (err) {
-            console.error(err);
-            grid.innerHTML = "<p style='color:#aaa'>Unable to load recommendations right now.</p>";
+            const response = await fetch(
+                `${API_BASE}/recommendations/${userId}`
+            );
+
+            if (!response.ok) {
+                throw new Error("HTTP error " + response.status);
+            }
+
+            const events = await response.json();
+
+            renderEvents(events);
+
+        } catch (error) {
+
+            console.error("Recommendation Error:", error);
+
+            grid.innerHTML =
+                "<p style='color:#aaa'>Unable to load recommendations right now.</p>";
         }
     }
 
-    function renderEvents(events) {
-        const grid = document.getElementById('recGrid');
-        grid.innerHTML = '';
 
-        events.forEach(e => {
-            const card = document.createElement('div');
-            card.className = 'card';
+    // =========================
+    // RENDER EVENTS
+    // =========================
+
+    function renderEvents(events) {
+
+        const grid = document.getElementById("recGrid");
+
+        grid.innerHTML = "";
+
+        if (!events || events.length === 0) {
+
+            grid.innerHTML =
+                "<p style='color:#aaa'>No recommendations available yet.</p>";
+
+            return;
+        }
+
+        events.forEach(event => {
+
+            const card = document.createElement("div");
+
+            card.className = "card";
 
             const eventData = {
-                title:         e.title || 'Untitled',
-                description:   e.description || '',
-                category:      mapCategory(e.categoryId),
-                categoryLabel: mapCategoryLabel(e.categoryId),
-                image:         mapCategoryImage(e.categoryId),
-                date:          new Date(e.eventDatetime).toDateString(),
-                location:      e.location || 'TBD'
+
+                title: event.title || "Untitled",
+
+                description: event.description || "",
+
+                category: mapCategory(event.categoryId),
+
+                categoryLabel: mapCategoryLabel(event.categoryId),
+
+                image: mapCategoryImage(event.categoryId),
+
+                date: new Date(event.eventDatetime).toLocaleString(),
+
+                location: event.location || "TBD"
             };
 
-            card.addEventListener('click', function(ev) {
-                if (ev.target.classList.contains('card-save-btn')) return;
+
+            // OPEN MODAL
+            card.addEventListener("click", function(ev) {
+
+                if (ev.target.classList.contains("card-save-btn")) {
+                    return;
+                }
+
                 Modal.open(eventData);
             });
 
+
+            // CARD HTML
             card.innerHTML =
+
                 '<div class="card-header">' +
-                '<a class="event-name">' + (e.title || 'Untitled') + '</a>' +
-                '<p class="event-type"><span class="badge ' + mapCategory(e.categoryId) + '">' + mapCategoryLabel(e.categoryId) + '</span></p>' +
+
+                '<a class="event-name">' +
+                (event.title || "Untitled") +
+                '</a>' +
+
+                '<p class="event-type">' +
+
+                '<span class="badge ' +
+                mapCategory(event.categoryId) +
+                '">' +
+
+                mapCategoryLabel(event.categoryId) +
+
+                '</span>' +
+
+                '</p>' +
+
                 '</div>' +
+
+
                 '<div class="image-container">' +
-                '<img src="' + mapCategoryImage(e.categoryId) + '" alt="' + (e.title || '') + '">' +
-                '<button class="card-save-btn" onclick="toggleSave(this)">🤍</button>' +
+
+                '<img src="' +
+                mapCategoryImage(event.categoryId) +
+                '" alt="' +
+                (event.title || "") +
+                '">' +
+
+                '<button class="card-save-btn" onclick="toggleSave(event, this, ' +
+                event.eventId +
+                ')">🤍</button>' +
+
                 '</div>' +
+
+
                 '<div class="card-details">' +
-                '<p class="desc">' + (e.description || '') + '</p>' +
-                '<p>📅 ' + new Date(e.eventDatetime).toDateString() + '</p>' +
-                '<p>📍 ' + (e.location || 'TBD') + '</p>' +
+
+                '<p class="desc">' +
+                (event.description || "") +
+                '</p>' +
+
+                '<p>📅 ' +
+                new Date(event.eventDatetime).toLocaleString() +
+                '</p>' +
+
+                '<p>📍 ' +
+                (event.location || "TBD") +
+                '</p>' +
+
                 '</div>';
 
             grid.appendChild(card);
         });
     }
 
-    function toggleSave(btn) {
-        btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
+
+    // =========================
+    // SAVE / UNSAVE
+    // =========================
+
+    async function toggleSave(event, button, eventId) {
+
+        event.stopPropagation();
+
+        try {
+
+            const userId = localStorage.getItem("userId");
+
+            if (!userId) {
+                alert("Please log in first.");
+                return;
+            }
+
+            const response = await fetch(
+                `${API_BASE}/saved/toggle?userId=${userId}&eventId=${eventId}`,
+                {
+                    method: "POST"
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Save failed");
+            }
+
+            // TOGGLE HEART
+            button.textContent =
+                button.textContent === "🤍"
+                    ? "❤️"
+                    : "🤍";
+
+        } catch (error) {
+
+            console.error("Save Error:", error);
+
+            alert("Unable to save event.");
+        }
     }
 
+
+    // =========================
+    // MODAL SYSTEM
+    // =========================
+
     const Modal = (() => {
+
         function init() {
-            const modal = document.createElement('div');
-            modal.id = 'cardModal';
-            modal.className = 'card-modal-overlay';
+
+            const modal = document.createElement("div");
+
+            modal.id = "cardModal";
+
+            modal.className = "card-modal-overlay";
+
             modal.innerHTML =
+
                 '<div class="card-modal">' +
+
                 '<div class="card-modal-header">' +
+
                 '<h2 id="modalTitle"></h2>' +
-                '<p class="event-type"><span id="modalBadge"></span></p>' +
+
+                '<p class="event-type">' +
+                '<span id="modalBadge"></span>' +
+                '</p>' +
+
                 '</div>' +
+
+
                 '<div class="card-modal-image">' +
+
                 '<img id="modalImage" src="" alt="">' +
-                '<button class="card-save-btn" id="modalSaveBtn" onclick="toggleSave(this)">🤍</button>' +
+
+                '<button class="card-save-btn" id="modalSaveBtn">🤍</button>' +
+
                 '</div>' +
+
+
                 '<div class="card-modal-body">' +
+
                 '<p id="modalDesc"></p>' +
+
                 '<div class="card-modal-meta">' +
+
                 '<p id="modalDate"></p>' +
+
                 '<p id="modalLocation"></p>' +
+
                 '</div>' +
+
                 '</div>' +
+
                 '</div>';
+
             document.body.appendChild(modal);
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) Modal.close();
+
+            modal.addEventListener("click", function(e) {
+
+                if (e.target === modal) {
+                    Modal.close();
+                }
             });
         }
 
+
         function open(event) {
-            document.getElementById('modalTitle').textContent    = event.title || '';
-            document.getElementById('modalDesc').textContent     = event.description || '';
-            document.getElementById('modalDate').textContent     = '📅 ' + (event.date || '');
-            document.getElementById('modalLocation').textContent = '📍 ' + (event.location || '');
-            document.getElementById('modalImage').src            = event.image || '';
-            document.getElementById('modalImage').alt            = event.title || '';
-            const badge = document.getElementById('modalBadge');
-            badge.textContent = event.categoryLabel || '';
-            badge.className   = 'badge ' + (event.category || '');
-            document.getElementById('modalSaveBtn').textContent = '🤍';
-            document.getElementById('cardModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+
+            document.getElementById("modalTitle").textContent =
+                event.title || "";
+
+            document.getElementById("modalDesc").textContent =
+                event.description || "";
+
+            document.getElementById("modalDate").textContent =
+                "📅 " + (event.date || "");
+
+            document.getElementById("modalLocation").textContent =
+                "📍 " + (event.location || "");
+
+            document.getElementById("modalImage").src =
+                event.image || "";
+
+            document.getElementById("modalImage").alt =
+                event.title || "";
+
+            const badge = document.getElementById("modalBadge");
+
+            badge.textContent =
+                event.categoryLabel || "";
+
+            badge.className =
+                "badge " + (event.category || "");
+
+            document.getElementById("cardModal")
+                .classList.add("active");
+
+            document.body.style.overflow = "hidden";
         }
+
 
         function close() {
-            document.getElementById('cardModal').classList.remove('active');
-            document.body.style.overflow = '';
+
+            document.getElementById("cardModal")
+                .classList.remove("active");
+
+            document.body.style.overflow = "";
         }
 
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener("DOMContentLoaded", init);
+
         return { open, close };
+
     })();
 
-    document.addEventListener('DOMContentLoaded', loadRecommendations);
+
+    // =========================
+    // PAGE LOAD
+    // =========================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        loadRecommendations
+    );
+
 </script>
 
 </body>

@@ -31,7 +31,7 @@ class UserControllerTest {
     void getById_shouldReturn200() throws Exception {
         User user = new User();
         user.setId(1);
-        user.setName("John");
+        user.setUsername("John");
 
         when(userService.getById(1)).thenReturn(user);
 
